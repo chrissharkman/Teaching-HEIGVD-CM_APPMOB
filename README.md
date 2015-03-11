@@ -26,6 +26,10 @@ If you want to use the reference implementation of the Citizen Engagement API ra
 * [AngularJS Developer Guide](https://docs.angularjs.org/guide)
 * [AngularJS API Reference](https://docs.angularjs.org/api)
 
+* [Angular UI Router](https://github.com/angular-ui/ui-router)
+* [Angular UI Router Guide](https://github.com/angular-ui/ui-router/wiki)
+* [Angular UI Router API Reference](http://angular-ui.github.io/ui-router/site/#/api/ui.router)
+
 * [Mapbox](https://www.mapbox.com)
 * [Angular Leaflet Directive for Mapbox](https://github.com/tombatossals/angular-leaflet-directive)
 * [Mapbox Javascript Library](https://www.mapbox.com/mapbox.js/api/v2.1.5/)
@@ -39,4 +43,5 @@ If you want to use the reference implementation of the Citizen Engagement API ra
   If you are using the Ionic View App to develop your mobile application on iOS,
   be aware that sometimes uploading is not enough to refresh your code on the device.
   You might need to stop your app (swipe down with three fingers), clear app data,
-  restart the Ionic View App (double tap on home button and close Ionic View App).
+  and restart the Ionic View App (double tap on home button and close Ionic View App).
+  Then you can re-download your app and it should be the latest version.
