@@ -36,7 +36,7 @@ If you want to use the reference implementation of the Citizen Engagement API ra
 
 * [Cordova Camera Plugin](https://github.com/apache/cordova-plugin-camera/blob/master/doc/index.md)
 
-## Labo Delivery Date
+## Labo Delivery
 
 **Delivery date:** April 30th at noon.
 
