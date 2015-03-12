@@ -36,6 +36,12 @@ If you want to use the reference implementation of the Citizen Engagement API ra
 
 * [Cordova Camera Plugin](https://github.com/apache/cordova-plugin-camera/blob/master/doc/index.md)
 
+## Labo Delivery Date
+
+**Delivery date:** April 30th at noon.
+
+Details to follow.
+
 ## Known Issues
 
 * [Ionic View App Issue #10: Upload doesn't seem to be updating JS or CSS files](https://github.com/driftyco/ionic-view-issues/issues/10)
