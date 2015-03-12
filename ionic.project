@@ -1,4 +1,10 @@
 {
   "name": "inspctr",
-  "app_id": ""
+  "app_id": "2c59e344",
+  "proxies": [
+    {
+      "path": "/api-proxy",
+      "proxyUrl": "https://fierce-sierra-5366.herokuapp.com/api"
+    }
+  ]
 }
