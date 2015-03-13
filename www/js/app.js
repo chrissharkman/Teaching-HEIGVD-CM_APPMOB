@@ -108,3 +108,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
 .config(function($httpProvider) {
     $httpProvider.interceptors.push('AuthInterceptor');
 })
+
+.config(function($logProvider){
+  $logProvider.debugEnabled(true);
+});

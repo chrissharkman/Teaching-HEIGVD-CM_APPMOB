@@ -2,24 +2,24 @@
 
 angular.module('inspctr.issues', [])
 
-.controller('IssueListCtrl', function(IssueService, $scope) {
+.controller('IssueListCtrl', function(IssueService, $scope, $log) {
 	var callback = function(error, data) {
 		if(error != null) {
-			console.log(error);
+			$log.debug(error)
 		} else {
-			console.log("everything ok callback");
+			$scope.issues = data;
+			$log.debug(data)
 		}
 	};
-
-
 	$scope.issues = IssueService.getIssues(callback);
 })
 
-.factory('IssueService', function($http, apiUrl) {
+.factory('IssueService', function($http, apiUrl, $log) {
 	return {
-		getIssues: function() {
+		getIssues: function(callback) {
+			var callback;
 			return $http.get(apiUrl + "/issues")
-			.success(function(data, callback) {
+			.success(function(data) {
 				if (typeof callback === "function") {
 					callback(null, data);
 				}	

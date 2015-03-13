@@ -2,20 +2,10 @@
 	<ion-content>
 		<ion-list ng-controller="IssueListCtrl">
 			<ion-item class="item-tumbnail-left" ui-sref="#" ng-repeat="issue in issues">
-				<div class="inspctr-thumbnailbox" style="background-image:url('https://s-media-cache-ak0.pinimg.com/originals/3c/37/08/3c3708a3c1ac5e8f80b95091dfb6e210.jpg');"></div>
-				<h2 class="inspctr-list">{{issue.name}}</h2>
-				<p class="inspctr-list">Issuetype.description ..</p>
+				<div class="inspctr-thumbnailbox" style="background-image:url('{{issue.imageUrl}}');"></div>
+				<h2 class="inspctr-list">{{issue.issueType.name}}</h2>
+				<p class="inspctr-list">{{issue.description}}</p>
 			</ion-item>
 		</ion-list>
 	</ion-content>
 </ion-view>
-
-
-
-	<!-- 	<ion-list>
-			<ion-item class="item-tumbnail-left" ui-sref="#">
-				<div class="inspctr-thumbnailbox" style="background-image:url('https://s-media-cache-ak0.pinimg.com/originals/3c/37/08/3c3708a3c1ac5e8f80b95091dfb6e210.jpg');"></div>
-				<h2 class="inspctr-list">Issuetype.name</h2>
-				<p class="inspctr-list">Issuetype.description ..</p>
-			</ion-item>
-		</ion-list> -->
