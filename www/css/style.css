@@ -3,3 +3,25 @@
 .bar.bar-header {
 	position: relative;
 }
+
+
+/* List with thumbnails */
+
+h2.inspctr-list {
+	display: inline-block;
+	width: 100%;
+}
+
+p.inspctr-list {
+	display: block;
+	width: 100%;
+}
+
+div.inspctr-thumbnailbox {
+	display: inline-block;
+	width: 20%;
+	height: 60px;
+	margin-right: 10px;
+	background-size: cover;
+	background-position: center center;
+}

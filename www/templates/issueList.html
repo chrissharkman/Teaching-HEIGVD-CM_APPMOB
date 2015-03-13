@@ -1,14 +1,21 @@
 <ion-view view-title="New Issue">
-  <ion-content>
-    <p>Hello! This is the issue LIST creation screen.</p>
-    <ion-list>
-    	<ion-item class="item-tumbnail-left" ui-sref="#">
-    		<img src="img/cover.jpg">
-    		<h2>Issuetype.name</h2>
-    		<p>Issuetype.description ..</p>
-    	</ion-item>	
-	</ion-list>
-
-
-  </ion-content>
+	<ion-content>
+		<ion-list ng-controller="IssueListCtrl">
+			<ion-item class="item-tumbnail-left" ui-sref="#" ng-repeat="issue in issues">
+				<div class="inspctr-thumbnailbox" style="background-image:url('https://s-media-cache-ak0.pinimg.com/originals/3c/37/08/3c3708a3c1ac5e8f80b95091dfb6e210.jpg');"></div>
+				<h2 class="inspctr-list">{{issue.name}}</h2>
+				<p class="inspctr-list">Issuetype.description ..</p>
+			</ion-item>
+		</ion-list>
+	</ion-content>
 </ion-view>
+
+
+
+	<!-- 	<ion-list>
+			<ion-item class="item-tumbnail-left" ui-sref="#">
+				<div class="inspctr-thumbnailbox" style="background-image:url('https://s-media-cache-ak0.pinimg.com/originals/3c/37/08/3c3708a3c1ac5e8f80b95091dfb6e210.jpg');"></div>
+				<h2 class="inspctr-list">Issuetype.name</h2>
+				<p class="inspctr-list">Issuetype.description ..</p>
+			</ion-item>
+		</ion-list> -->
