@@ -14,22 +14,15 @@ h2.inspctr-list {
 
 p.inspctr-list {
 	width: 70%;
+	line-height: 1.2;
+	margin-bottom: 10px;
 }
-
-/*div.inspctr-thumbnailbox {
-	display: inline-block;
-	width: 20%;
-	height: 60px;
-	margin-right: 10px;
-	background-size: cover;
-	background-position: center center;
-}*/
 
 div.inspctr-thumbnailbox {
 	position: relative;
 	width: 20%;
+	max-width: 90px;
 	margin-right: 5%;
-	margin-bottom: 5%;
 	float:left;
 }
 
@@ -37,4 +30,18 @@ div.inspctr-thumbnailbox:before{
 	content: "";
 	display: block;
 	margin-top: 100%; 	/* initial ratio of 1:1*/
+}
+
+p.inspctr-showstate {
+	font-size: 0.65em;
+	font-weight:bold;
+	color: rgb(143,203,130);
+}
+
+/* to make sure that the whole list is displayed */
+div.inspctr-bottomblock {
+	width: 100%;
+	height: 10px;
+	background-color: rgb(240,240,240);
+	margin-bottom:120px;
 }

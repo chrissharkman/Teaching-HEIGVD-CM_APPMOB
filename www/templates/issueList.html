@@ -5,7 +5,12 @@
 				<div class="inspctr-thumbnailbox" style="background-image:url('{{issue.imageUrl}}');"></div>
 				<h2 class="inspctr-list">{{issue.issueType.name}}</h2>
 				<p class="inspctr-list">{{issue.description}}</p>
+				<p ng-if="issue.assignee.name" class="inspctr-showstate">Assignee: {{ issue.assignee.name }}</p>
+				<div ng-repeat="action in issue.actions">
+					<p ng-if="action.type == 'resolve' && issue.assignee.name == null" class="inspctr-showstate">Acknowledged</p>
+				</div>	
 			</ion-item>
 		</ion-list>
+		<div class="inspctr-bottomblock"></div>
 	</ion-content>
 </ion-view>

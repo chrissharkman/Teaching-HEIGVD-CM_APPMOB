@@ -18,7 +18,13 @@ angular.module('inspctr.issues', [])
 	return {
 		getIssues: function(callback) {
 			var callback;
-			return $http.get(apiUrl + "/issues")
+			var header = {
+				headers: {
+        		//'x-pagination': '10;6',
+        		'x-sort': 'updatedOn'
+		    	}
+			};
+			return $http.get(apiUrl + "/issues", header)
 			.success(function(data) {
 				if (typeof callback === "function") {
 					callback(null, data);
