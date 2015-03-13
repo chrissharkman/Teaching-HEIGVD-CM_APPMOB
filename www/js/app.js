@@ -31,29 +31,37 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
     .state('sideMenu', {
       url: '/sideMenu',
       abstract: true,
-      templateUrl: 'features/navigation/sideMenu.html'
+      templateUrl: 'features/navigation/sideMenu.html',
+      controller: 'NavigationCtrl'
     })
 
-    // The three next states are for each of the three tabs.
-    // The state names start with "tab.", indicating that they are children of the "tab" state.
-    .state('tab.newIssue', {
+    .state('sideMenu.newIssue', {
       // The URL (here "/newIssue") is used only internally with Ionic; you never see it displayed anywhere.
       // In an Angular website, it would be the URL you need to go to with your browser to enter this state.
       url: '/newIssue',
       views: {
         // The "tab-newIssue" view corresponds to the <ion-nav-view name="tab-newIssue"> directive used in the tabs.html template.
-        'tab-newIssue': {
+        'mainContent': {
           // This defines the template that will be inserted into the directive.
           templateUrl: 'templates/newIssue.html'
         }
       }
     })
 
-    .state('tab.issueMap', {
+    .state('sideMenu.issueMap', {
       url: '/issueMap',
       views: {
-        'tab-issueMap': {
+        'mainContent': {
           templateUrl: 'templates/issueMap.html'
+        }
+      }
+    })
+
+    .state('sideMenu.myIssues', {
+      url: '/myIssues',
+      views: {
+        'mainContent': {
+          templateUrl: 'templates/myIssues.html'
         }
       }
     })
@@ -61,7 +69,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
     .state('sideMenu.issueList', {
       url: '/issueList',
       views: {
-        'sideMenu-issueList': {
+        'mainContent': {
           templateUrl: 'templates/issueList.html'
         }
       }

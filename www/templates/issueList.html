@@ -1,9 +1,14 @@
 <ion-view view-title="New Issue">
-  <ion-nav-buttons side="secondary">
-    <button type="button" ng-controller="LogoutCtrl" ng-click="logOut()" class="button">Log Out</button>
-  </ion-nav-buttons>
-
   <ion-content>
     <p>Hello! This is the issue LIST creation screen.</p>
+    <ion-list>
+    	<ion-item class="item-tumbnail-left" ui-sref="#">
+    		<img src="img/cover.jpg">
+    		<h2>Issuetype.name</h2>
+    		<p>Issuetype.description ..</p>
+    	</ion-item>	
+	</ion-list>
+
+
   </ion-content>
 </ion-view>

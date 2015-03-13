@@ -60,8 +60,8 @@ angular.module('inspctr.auth', ['angular-storage'])
           historyRoot: true
         });
 
-        // Go to the issue creation tab.
-        $state.go('tab.newIssue');
+        // Go to the issue list.
+        $state.go('sideMenu.issueList');
 
       }).error(function() {
 
