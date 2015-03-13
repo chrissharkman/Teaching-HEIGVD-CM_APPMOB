@@ -36,6 +36,9 @@ If you want to use the reference implementation of the Citizen Engagement API ra
 
 * [Cordova Camera Plugin](https://github.com/apache/cordova-plugin-camera/blob/master/doc/index.md)
 
+* [qimg](https://github.com/SoftEng-HEIGVD/qimg)
+* [qimg API Reference](http://softeng-heigvd.github.io/qimg/)
+
 ## Labo Delivery
 
 **Delivery date:** April 30th at noon.
