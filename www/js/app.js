@@ -27,13 +27,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-    // This is the abstract state for the tabs directive.
-    .state('tab', {
-      url: '/tab',
-      abstract: true,
-      templateUrl: 'templates/tabs.html'
-    })
-
+    // This is the abstract state for the sideMenu directive.
     .state('sideMenu', {
       url: '/sideMenu',
       abstract: true,
@@ -67,7 +61,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
     .state('sideMenu.issueList', {
       url: '/issueList',
       views: {
-        'tab-issueList': {
+        'sideMenu-issueList': {
           templateUrl: 'templates/issueList.html'
         }
       }

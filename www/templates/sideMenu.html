@@ -1,11 +1,23 @@
 <ion-side-menus enable-menu-with-back-views="true">
-  <!-- Center content -->
-  <ion-side-menu-content ng-controller="NavigationCtrl">
-  </ion-side-menu-content>
-  <!-- Left menu -->
-  <ion-side-menu side="left">
-  </ion-side-menu>
-  <ion-side-menu-content edge-drag-threshold="true" drag-content="true">
-  </ion-side-menu-content>
+	<ion-side-menu-content ng-controller="NavigationCtrl" edge-drag-threshold="true" drag-content="true" >
+		<ion-header-bar class="bar-header bar-positive">
+			<button class="button button-icon icon ion-navicon" menu-toggle="left"></button>
+			<h1 class="title">inspctr</h1>
+		</ion-header-bar>
+    	<!-- <ion-nav-view name="sideMenu-issueList"></ion-nav-view> -->
+	</ion-side-menu-content>
+	<!--
+    The views will be rendered in the <ion-nav-view>
+	directive below
+    Templates are in the /templates folder (but you could also
+    have templates inline in this html file if you'd like).
+    -->
+	<ion-side-menu>
+		<div class="bar bar-header">
+			<div class="h1 title">finally</div>
+		</div>
+		<ion-list>
+			<ion-item ui-sref="sideMenu.html" menu-close>Hello!</ion-item>
+		</ion-list>
+	</ion-side-menu>
 </ion-side-menus>
-
