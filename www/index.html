@@ -23,15 +23,20 @@
     <script src="js/auth.js"></script>
     <script src="js/constants.js"></script>
 
+    <!-- feature js -->
+    <script src="features/navigation/nav.js"></script>
+
   </head>
   <body ng-app="inspctr">
     <!--
     The nav bar that will be updated as we navigate between views.
   -->
   <ion-nav-bar class="bar-stable">
-    <ion-nav-back-button>
-    </ion-nav-back-button>
+    <ion-nav-buttons side="left">
+      <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
   </ion-nav-bar>
+
 
   <!--
     The views will be rendered in the <ion-nav-view> directive below

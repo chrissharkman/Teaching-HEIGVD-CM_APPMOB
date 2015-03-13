@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('inspctr', ['ionic', 'inspctr.auth', 'inspctr.constants'])
+angular.module('inspctr', ['ionic', 'inspctr.auth', 'inspctr.constants', 'inspctr.nav'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -34,6 +34,12 @@ angular.module('inspctr', ['ionic', 'inspctr.auth', 'inspctr.constants'])
       templateUrl: 'templates/tabs.html'
     })
 
+    .state('sideMenu', {
+      url: '/sideMenu',
+      abstract: true,
+      templateUrl: 'features/navigation/sideMenu.html'
+    })
+
     // The three next states are for each of the three tabs.
     // The state names start with "tab.", indicating that they are children of the "tab" state.
     .state('tab.newIssue', {
@@ -58,7 +64,7 @@ angular.module('inspctr', ['ionic', 'inspctr.auth', 'inspctr.constants'])
       }
     })
 
-    .state('tab.issueList', {
+    .state('sideMenu.issueList', {
       url: '/issueList',
       views: {
         'tab-issueList': {
@@ -76,7 +82,7 @@ angular.module('inspctr', ['ionic', 'inspctr.auth', 'inspctr.constants'])
 
   // Define the default state (i.e. the first screen displayed when the app opens).
   $urlRouterProvider.otherwise(function($injector) {
-    $injector.get('$state').go('tab.newIssue'); // Go to the new issue tab by default.
+    $injector.get('$state').go('sideMenu.issueList'); // Go to the new issue tab by default.
   });
 })
 
@@ -99,4 +105,4 @@ angular.module('inspctr', ['ionic', 'inspctr.auth', 'inspctr.constants'])
 
 .config(function($httpProvider) {
     $httpProvider.interceptors.push('AuthInterceptor');
-  })
+})
