@@ -67,7 +67,7 @@ angular.module('inspctr.auth', ['angular-storage'])
 
         // If an error occurs, hide the loading message and show an error message.
         $ionicLoading.hide();
-        $scope.error = 'Could not log in.';
+        $scope.error = 'Could not log in, sorry.';
       });
     };
   })
