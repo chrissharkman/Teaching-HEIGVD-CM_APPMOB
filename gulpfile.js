@@ -59,6 +59,7 @@ function saveConfig(environment) {
 
     // Replace all occurrences of @apiUrl@.
     .pipe(replace(/@apiUrl@/g, config.apiUrl))
+    .pipe(replace(/@placeholderImage@/g, config.placeholderImage))
 
     // Save the result in www/js.
     .pipe(gulp.dest('www/js'));

@@ -2,12 +2,17 @@
 
 angular.module('inspctr.issues', [])
 
-.controller('IssueListCtrl', function(IssueService, $scope, $log) {
+.controller('IssueListCtrl', function(IssueService, $scope, placeholderImage, $log) {
 	var callback = function(error, data) {
 		if(error != null) {
 			$log.debug(error)
 		} else {
 			$scope.issues = data;
+			if (placeholderImage) {
+				$scope.issues.forEach(function(issue) {
+					issue.imageUrl = "img/placeholder.png";
+				})
+			}
 			$log.debug(data)
 		}
 	};
