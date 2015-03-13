@@ -8,7 +8,7 @@ angular.module('inspctr.issues', [])
 			$log.debug(error)
 		} else {
 			$scope.issues = data;
-			if (placeholderImage === 'true' && placeholder != 'false') {
+			if (placeholderImage === 'true' && placeholderImage !== 'false') {
 				$scope.issues.forEach(function(issue) {
 					issue.imageUrl = "img/placeholder.png";
 				})
