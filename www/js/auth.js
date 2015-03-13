@@ -3,14 +3,17 @@ angular.module('inspctr.auth', ['angular-storage'])
   .service('AuthService', function() {
 
     var service = {
-      currentUserId: store.get('currentUserId'),
+    //  currentUserId: store.get('currentUserId'),
+      currentUserId: null,
 
       setUser: function(user) {
         service.currentUserId = user.userId;
+     //   store.set('currentUserId', user.userId);
       },
 
       unsetUser: function() {
         service.currentUserId = null;
+    //    store.remove('currentUserId');
       }
     };
 
