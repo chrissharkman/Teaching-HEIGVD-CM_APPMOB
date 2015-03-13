@@ -1,26 +1,25 @@
 angular.module('inspctr.auth', ['angular-storage'])
 
-  .service('AuthService', function() {
+  .factory('AuthService', function(store) {
 
     var service = {
-    //  currentUserId: store.get('currentUserId'),
-      currentUserId: null,
+      currentUserId: store.get('currentUserId'),
 
       setUser: function(user) {
         service.currentUserId = user.userId;
-     //   store.set('currentUserId', user.userId);
+        store.set('currentUserId', user.userId);
       },
 
       unsetUser: function() {
         service.currentUserId = null;
-    //    store.remove('currentUserId');
+        store.remove('currentUserId');
       }
     };
 
     return service;
   })
 
- .controller('LoginCtrl', function(AuthService, $http, $ionicHistory, $ionicLoading, $scope, $state) {
+ .controller('LoginCtrl', function(apiUrl, AuthService, $http, $ionicHistory, $ionicLoading, $scope, $state) {
 
     // The $ionicView.beforeEnter event happens every time the screen is displayed.
     $scope.$on('$ionicView.beforeEnter', function() {
@@ -44,7 +43,7 @@ angular.module('inspctr.auth', ['angular-storage'])
       // Make the request to retrieve or create the user.
       $http({
         method: 'POST',
-        url: 'http://localhost:8100/api-proxy/users/logister',
+        url: apiUrl + '/users/logister',
         data: $scope.user
       }).success(function(user) {
 
@@ -77,6 +76,23 @@ angular.module('inspctr.auth', ['angular-storage'])
     $scope.logOut = function() {
       AuthService.unsetUser();
       $state.go('login');
+    };
+  })
+
+ .factory('AuthInterceptor', function(AuthService) {
+    return {
+
+      // The request function will be called before all requests.
+      // In it, you can modify the request configuration object.
+      request: function(config) {
+
+        // If the user is logged in, add the X-User-Id header.
+        if (AuthService.currentUserId) {
+          config.headers['X-User-Id'] = AuthService.currentUserId;
+        }
+
+        return config;
+      }
     };
   })
 
