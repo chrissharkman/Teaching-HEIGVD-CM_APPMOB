@@ -43,7 +43,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
         // The "tab-newIssue" view corresponds to the <ion-nav-view name="tab-newIssue"> directive used in the tabs.html template.
         'mainContent': {
           // This defines the template that will be inserted into the directive.
-          templateUrl: 'templates/newIssue.html'
+          templateUrl: 'features/issues/newIssue.html'
         }
       }
     })
@@ -52,7 +52,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
       url: '/issueMap',
       views: {
         'mainContent': {
-          templateUrl: 'templates/issueMap.html'
+          templateUrl: 'features/issues/issueMap.html'
         }
       }
     })
@@ -61,7 +61,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
       url: '/myIssues',
       views: {
         'mainContent': {
-          templateUrl: 'templates/myIssues.html'
+          templateUrl: 'features/issues/myIssues.html'
         }
       }
     })
@@ -70,7 +70,19 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
       url: '/issueList',
       views: {
         'mainContent': {
-          templateUrl: 'templates/issueList.html'
+          templateUrl: 'features/issues/issueList.html'
+        }
+      }
+    })
+
+    .state('sideMenu.issueDetail', {
+      url: '/issueDetail/:issueId',
+      controller: function($stateParams) {
+        $stateParams.issueId;
+      },
+      views: {
+        'mainContent': {
+          templateUrl: 'features/issues/issueDetail.html'
         }
       }
     })
@@ -78,7 +90,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
     .state('login', {
       url: '/login',
       controller: 'LoginCtrl',
-      templateUrl: 'templates/login.html'
+      templateUrl: 'features/auth/login.html'
     })
   ;
 

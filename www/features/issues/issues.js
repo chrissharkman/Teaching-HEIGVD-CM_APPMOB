@@ -2,21 +2,37 @@
 
 angular.module('inspctr.issues', [])
 
-.controller('IssueListCtrl', function(IssueService, $scope, placeholderImage, $log) {
+.controller('IssueListCtrl', function(IssueService, $scope, placeholderImage, placeholderImagePath, $log) {
 	var callback = function(error, data) {
 		if(error != null) {
 			$log.debug(error)
 		} else {
 			$scope.issues = data;
-			if (placeholderImage === 'true' && placeholderImage !== 'false') {
-				$scope.issues.forEach(function(issue) {
-					issue.imageUrl = "img/placeholder.png";
-				})
-			}
+			$scope.issues.forEach(function(issue) {
+				if (setPlaceholder(issue, placeholderImage)) {
+					issue.imageUrl = placeholderImagePath;
+				}
+			});
 			$log.debug(data)
 		}
 	};
 	$scope.issues = IssueService.getIssues(callback);
+})
+
+.controller('IssueDetailCtrl', function(IssueService, $scope, $stateParams, placeholderImage, placeholderImagePath, $log) {
+	$log.debug($stateParams);
+	var callback = function(error, data) {
+		if(error != null) {
+			$log.debug(error);
+		} else {
+			$scope.issue = data;
+			if (setPlaceholder($scope.issue, placeholderImage)) {
+				$scope.issue.imageUrl = placeholderImagePath;
+			}
+			$log.debug(data);
+		}
+	};
+	$scope.issue = IssueService.getIssueDetails($stateParams, callback);
 })
 
 .factory('IssueService', function($http, apiUrl, $log) {
@@ -25,7 +41,7 @@ angular.module('inspctr.issues', [])
 			var callback;
 			var header = {
 				headers: {
-        		//'x-pagination': '10;6',
+        		'x-pagination': '10;9',
         		'x-sort': 'updatedOn'
 		    	}
 			};
@@ -41,6 +57,29 @@ angular.module('inspctr.issues', [])
 				}	
 			})
 			;
+		},
+		getIssueDetails: function(stateParams, callback) {
+			var callback;
+			var stateParams;
+			$log.debug("in getIssueDetails");
+			return $http.get(apiUrl + "/issues/" + stateParams.issueId)
+			.success(function(data) {
+				if (typeof callback === "function") {
+					callback(null, data);
+				}
+			})
+			.error(function(error){
+				if (typeof callback === "function") {
+					callback(error, null);
+				}
+			}) 
+
 		}
 	};
-})
+});
+
+// function to determine, if config says that placeholder should be set (true).
+// Or if the actual issue does not have an actual imageUrl then also set a placeholder.
+function setPlaceholder(issue, placeholderImage) {
+	return ((placeholderImage === 'true' && placeholderImage !== 'false') || (issue.imageUrl == ''))
+}

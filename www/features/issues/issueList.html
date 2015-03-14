@@ -1,11 +1,11 @@
 <ion-view view-title="New Issue">
 	<ion-content class="glue-scroll-content">
 		<ion-list ng-controller="IssueListCtrl">
-			<ion-item class="item-tumbnail-left" ui-sref="#" ng-repeat="issue in issues">
+			<ion-item class="item-tumbnail-left" ui-sref="sideMenu.issueDetail({issueId:issue.id})" ng-repeat="issue in issues">
 				<div class="inspctr-thumbnailbox" style="background-image:url('{{issue.imageUrl}}');"></div>
 				<h2 class="inspctr-list">{{issue.issueType.name}}</h2>
 				<p class="inspctr-list">{{issue.description}}</p>
-				<p ng-if="issue.assignee.name" class="inspctr-showstate">Assignee: {{ issue.assignee.name }}</p>
+				<p ng-if="issue.assignee.name" class="inspctr-showstate">Assignee: {{issue.assignee.name}}</p>
 				<div ng-repeat="action in issue.actions">
 					<p ng-if="action.type == 'resolve' && issue.assignee.name == null" class="inspctr-showstate">Acknowledged</p>
 				</div>	

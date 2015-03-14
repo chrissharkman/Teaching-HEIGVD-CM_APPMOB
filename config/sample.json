@@ -1,4 +1,5 @@
 {
 	"apiUrl":"http://url.bidon.ch",
-	"placeholderImage":"http://nice.try.ch"
+	"placeholderImage":"http://nice.try.ch",
+	"placeholderImagePath": "img/placeholder.png"
 }

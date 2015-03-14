@@ -1,11 +1,14 @@
-/* inspctr styles */
+/* inspctr styles
+	Author: Christian Heimann;
+	Additional styles for inspctr app, adapted for iPhone and iPad.
+ */
 
 .bar.bar-header {
 	position: relative;
 }
 
 
-/* List with thumbnails */
+/* Issue List with thumbnails */
 
 .glue-scroll-content {
 	margin-top: -45px;
