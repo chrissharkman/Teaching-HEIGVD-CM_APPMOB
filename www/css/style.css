@@ -26,8 +26,9 @@ div.inspctr-thumbnailbox {
 	position: relative;
 	width: 20%;
 	max-width: 90px;
-	margin-right: 5%;
+	margin-right: 15px;
 	float:left;
+	background-size: cover;
 }
 
 div.inspctr-thumbnailbox:before{
