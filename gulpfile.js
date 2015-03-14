@@ -61,6 +61,9 @@ function saveConfig(environment) {
     .pipe(replace(/@apiUrl@/g, config.apiUrl))
     .pipe(replace(/@placeholderImage@/g, config.placeholderImage))
     .pipe(replace(/@placeholderImagePath@/g, config.placeholderImagePath))
+    .pipe(replace(/@mapboxDefaultSecretToken@/g, config.mapboxDefaultSecretToken))
+    .pipe(replace(/@mapboxDefaultPublicToken@/g, config.mapboxDefaultPublicToken))
+    .pipe(replace(/@mapboxMapId@/g, config.mapboxMapId))
 
     // Save the result in www/js.
     .pipe(gulp.dest('www/js'));
