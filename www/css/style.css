@@ -70,3 +70,8 @@ div.inspctr-full-imagebox {
 div.inspctr-full-imagebox img {
 	width:100%;
 }
+
+/* Full map with issues */
+.inspctr-full-map {
+	height: 600px;
+}

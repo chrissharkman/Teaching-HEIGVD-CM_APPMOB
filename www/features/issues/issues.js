@@ -16,7 +16,13 @@ angular.module('inspctr.issues', [])
 			$log.debug(data)
 		}
 	};
-	$scope.issues = IssueService.getIssues(callback);
+	var header = {
+		headers: {
+        'x-pagination': '10;9',
+        'x-sort': 'updatedOn'
+		}
+	}		
+	$scope.issues = IssueService.getIssues(header, callback);
 })
 
 .controller('IssueDetailCtrl', function(IssueService, $scope, $stateParams, placeholderImage, placeholderImagePath, $log) {
@@ -37,15 +43,26 @@ angular.module('inspctr.issues', [])
 
 .factory('IssueService', function($http, apiUrl, $log) {
 	return {
-		getIssues: function(callback) {
+		getIssues: function(header, callback) {
 			var callback;
-			var header = {
-				headers: {
-        		'x-pagination': '10;9',
-        		'x-sort': 'updatedOn'
-		    	}
-			};
+			var header;
 			return $http.get(apiUrl + "/issues", header)
+			.success(function(data) {
+				if (typeof callback === "function") {
+					callback(null, data);
+				}	
+			})
+			.error(function(error) {
+				if (typeof callback === "function") {
+					callback(error, null);
+				}	
+			})
+			;
+		},
+		getIssuesWithinBoundingBox: function(boundingBox, callback) {
+			var callback;
+			var boundingBox;
+			return $http.post(apiUrl + "/issues/search", header)
 			.success(function(data) {
 				if (typeof callback === "function") {
 					callback(null, data);

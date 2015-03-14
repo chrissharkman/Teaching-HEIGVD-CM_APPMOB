@@ -62,7 +62,7 @@ function saveConfig(environment) {
     .pipe(replace(/@placeholderImage@/g, config.placeholderImage))
     .pipe(replace(/@placeholderImagePath@/g, config.placeholderImagePath))
     .pipe(replace(/@mapboxDefaultSecretToken@/g, config.mapboxDefaultSecretToken))
-    .pipe(replace(/@mapboxDefaultPublicToken@/g, config.mapboxDefaultPublicToken))
+    .pipe(replace(/@mapboxAccessToken@/g, config.mapboxAccessToken))
     .pipe(replace(/@mapboxMapId@/g, config.mapboxMapId))
 
     // Save the result in www/js.

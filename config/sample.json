@@ -3,6 +3,6 @@
 	"placeholderImage":"http://nice.try.ch",
 	"placeholderImagePath": "img/placeholder.png",
   "mapboxDefaultSecretToken": "abc",
-  "mapboxDefaultPublicToken": "ghi",
+  "mapboxAccessToken": "ghi",
   "mapboxMapId": "chris"
 }

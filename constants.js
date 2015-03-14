@@ -3,6 +3,6 @@ angular.module('inspctr.constants', [])
   .constant('placeholderImage', '@placeholderImage@')
   .constant('placeholderImagePath', '@placeholderImagePath@')
   .constant('mapboxDefaultSecretToken', '@mapboxDefaultSecretToken@')
-  .constant('mapboxDefaultPublicToken', '@mapboxDefaultPublicToken@')
+  .constant('mapboxAccessToken', '@mapboxAccessToken@')
   .constant('mapboxMapId', '@mapboxMapId@')
 ;
