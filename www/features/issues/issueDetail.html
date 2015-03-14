@@ -1,6 +1,17 @@
 <ion-view view-title="Issue Detail">
-  <ion-content ng-controller="IssueDetailCtrl">
-  <button class="button button-full button-light" ui-sref="sideMenu.issueList">Back to List</button>
-    <p>I am on the Detail of the issue {{issue.id}}</p>
-  </ion-content>
+	<ion-content ng-controller="IssueDetailCtrl" class="glue-scroll-content">
+		<button class="button button-full button-light" ui-sref="sideMenu.issueList">Back to List</button>
+		<div class="padding">
+			<p class="inspctr-issue-date">Created on: {{issue.createdOn | date:'dd.MM.yyyy HH:mm'}} – Last update: {{issue.updatedOn | date:'dd.MM.yyyy HH:mm'}}</p>
+			<h1>{{issue.issueType.name}}</h1>
+			<p>{{issue.description}}</p>
+		</div>	
+		<div class="inspctr-full-imagebox">
+			<img src="{{issue.imageUrl}}">
+		</div>
+		<div class="padding">
+		</div>
+	</ion-content>
 </ion-view>
+
+{{item.date | date:'yyyy-MM-dd HH:mm:ss Z'}}

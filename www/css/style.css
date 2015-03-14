@@ -53,3 +53,20 @@ div.inspctr-bottomblock {
 	background-color: rgb(240,240,240);
 	margin-bottom:120px;
 }
+
+/* Issue Detail view */
+
+p.inspctr-issue-date {
+	font-size: 0.65em;
+	color: rgb(143,203,130);
+	text-align: center;
+}
+
+div.inspctr-full-imagebox {
+	display:block;
+	width:100%;
+}
+
+div.inspctr-full-imagebox img {
+	width:100%;
+}

@@ -66,10 +66,10 @@ function saveConfig(environment) {
     .pipe(gulp.dest('www/js'));
 }
 
-gulp.task('config-development', function(){
-  saveConfig('development');
+gulp.task('cdev', function(){
+  saveConfig('dev');
 });
 
-gulp.task('config-production', function(){
-  saveConfig('production');
+gulp.task('cprod', function(){
+  saveConfig('prod');
 });
