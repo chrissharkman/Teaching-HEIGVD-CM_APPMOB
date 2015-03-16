@@ -2,15 +2,13 @@
 
 angular.module('inspctr.map', [])
 
-.controller("MapIssuesCtrl", function(mapboxMapId, mapboxAccessToken, $scope, IssueService) {
+.controller("MapIssuesCtrl", function(mapboxMapId, mapboxAccessToken, geolocation, $scope, IssueService, MapService, $log) {
 	var callback = function(error, data) {
 		if(error != null) {
 			$log.debug(error)
 		} else {
 			$scope.issues = data;
-
-
-			$scope.mapCenter
+			$scope.mapCenter;
 			$log.debug(data)
 		}
 	};
@@ -20,6 +18,9 @@ angular.module('inspctr.map', [])
 
 	//$scope.issues = IssueService.getIssuesWithinBoundingBox(header, boundingBox, callback);
 
+	$log.debug("in MapIssuesCtrl");
+	$log.debug(geolocation.getLocation())
+	//MapService.getLocation();
 
 	var mapboxTileLayer = "http://api.tiles.mapbox.com/v4/" + mapboxMapId;
 	mapboxTileLayer = mapboxTileLayer + "/{z}/{x}/{y}.png?access_token=" + mapboxAccessToken;
@@ -35,7 +36,7 @@ angular.module('inspctr.map', [])
 	$scope.mapMarkers = [];
 })
 
-.factory('MapService', function(position, $log) {
+.factory('MapService', function($log) {
 	return {
 		getBoundingBox: function(position) {
 			return {
@@ -43,6 +44,17 @@ angular.module('inspctr.map', [])
 				'from': {'lng':6.622009, 'lat':46.766129},
 				'to': {'lng':6.651878, 'lat':46.784234}
 			}
+		},
+		getLocation: function() {
+    		if (navigator.geolocation) {
+    			$log.debug(navigator.geolocation.getCurrentPosition(showPosition));
+    		} else { 
+        		$log.debug("Geolocation is not supported by this browser.");
+    		}
 		}
 	}
 })
+
+function showPosition(position) {
+	return "aaaaa";
+}
