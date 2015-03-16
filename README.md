@@ -41,7 +41,7 @@ If you want to use the reference implementation of the Citizen Engagement API ra
 
 ## Labo Delivery
 
-**Delivery date:** April 30th at noon.
+**Delivery date:** March 30th at noon.
 
 Details to follow.
 
