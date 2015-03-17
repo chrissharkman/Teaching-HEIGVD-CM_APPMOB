@@ -8,12 +8,7 @@ angular.module('inspctr.issues', [])
 			$log.debug(error)
 		} else {
 			$scope.issues = data;
-			$scope.issues.forEach(function(issue) {
-				if (setPlaceholder(issue, placeholderImage)) {
-					issue.imageUrl = placeholderImagePath;
-				}
-			});
-			$log.debug(data)
+			$scope.issues = IssueService.checkPlaceholder($scope.issues);
 		}
 	};
 	var header = {
@@ -26,7 +21,6 @@ angular.module('inspctr.issues', [])
 })
 
 .controller('IssueDetailCtrl', function(IssueService, $scope, $stateParams, placeholderImage, placeholderImagePath, $log) {
-	$log.debug($stateParams);
 	var callback = function(error, data) {
 		if(error != null) {
 			$log.debug(error);
@@ -41,7 +35,13 @@ angular.module('inspctr.issues', [])
 	$scope.issue = IssueService.getIssueDetails($stateParams, callback);
 })
 
-.factory('IssueService', function($http, apiUrl, $log) {
+.factory('IssueService', function($http, apiUrl, placeholderImage, placeholderImagePath, $log) {
+	// function to determine, if config says that placeholder should be set (true).
+	// Or if the actual issue does not have an actual imageUrl then also set a placeholder.
+	function setPlaceholder(issue, placeholderImage) {
+		return ((placeholderImage === 'true' && placeholderImage !== 'false') || (issue.imageUrl == ''))
+	}
+
 	return {
 		getIssues: function(header, callback) {
 			var callback;
@@ -59,9 +59,23 @@ angular.module('inspctr.issues', [])
 			})
 			;
 		},
-		getIssuesWithinBoundingBox: function(boundingBox, callback) {
+		getIssuesWithinBounds: function(bounds, callback) {
 			var callback;
 			var boundingBox;
+			var header = {
+				"$and": [ {
+					"lat": {
+						"$gte": bounds.southWest.lat,
+						"$lte": bounds.northEast.lat
+					}
+				}, {
+					"lng": {
+						"$gte": bounds.southWest.lng,
+						"$lte": bounds.northEast.lng
+					}
+				}
+				]
+			}
 			return $http.post(apiUrl + "/issues/search", header)
 			.success(function(data) {
 				if (typeof callback === "function") {
@@ -90,13 +104,14 @@ angular.module('inspctr.issues', [])
 					callback(error, null);
 				}
 			}) 
-
-		}
+		},
+		checkPlaceholder: function(issues) {
+			issues.forEach(function(issue) {
+				if (setPlaceholder(issue, placeholderImage)) {
+					issue.imageUrl = placeholderImagePath;
+				}
+			});
+			return issues;	
+		},
 	};
 });
-
-// function to determine, if config says that placeholder should be set (true).
-// Or if the actual issue does not have an actual imageUrl then also set a placeholder.
-function setPlaceholder(issue, placeholderImage) {
-	return ((placeholderImage === 'true' && placeholderImage !== 'false') || (issue.imageUrl == ''))
-}

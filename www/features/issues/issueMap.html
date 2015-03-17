@@ -1,6 +1,5 @@
 <ion-view view-title="Issue Map">
   <ion-content ng-controller="MapIssuesCtrl">
-    <p>Hello! This is the issue MAPP creation screen.</p>
-    <leaflet class="inspctr-full-map" defaults="mapDefaults" center="mapCenter" markers="mapMarkers" data-tap-disabled="true"></leaflet>
+    <leaflet id="map-full" class="inspctr-flexible-map-height" defaults="mapDefaults" center="mapCenter" bounds="mapBounds" markers="mapMarkers" data-tap-disabled="true"></leaflet>
   </ion-content>
 </ion-view>

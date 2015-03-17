@@ -2,54 +2,93 @@
 
 angular.module('inspctr.map', [])
 
-.controller("MapIssuesCtrl", function(mapboxMapId, mapboxAccessToken, geolocation, $scope, IssueService, MapService, $log) {
+.controller("MapIssuesCtrl", function(mapboxMapId, mapboxAccessToken, geolocation, leafletEvents, $scope, $window, IssueService, MapService, $log) {
+	var callbackSetMarkerIssues = function(error, data) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			MapService.setIssueMarker(data, $scope);
+		}	
+	};
+
+	var callbackGetIssues = function(error) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			setTimeout(function() {
+				IssueService.getIssuesWithinBounds($scope.mapBounds, callbackSetMarkerIssues);
+			}, 1500);
+		}
+	};
+
+	var callbackGetBoundingBox = function(error) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			MapService.getBoundingBox($scope, callbackGetIssues);
+		}
+	};
+
 	var callbackGetDeviceLoc = function(error) {
 		if(error != null) {
 			$log.debug(error)
 		} else {
-			$log.debug("in callbackGetDeviceLoc");
-			$log.debug($scope)
 			MapService.setMapCenter($scope);
-			MapService.setMapZoom(17, $scope);
+			MapService.setMapZoom(17, $scope, callbackGetBoundingBox);
 			MapService.setPositionMarker($scope);
 		}
 	};
 
+	// set optimal leaflet height
+	var paramMapHeight = {pixel:88};
+//	document.querySelector('#map-full')
+	MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeight);
 
-	//MapService.getDevicePosition();
-	//var boundingBox = MapService.getBoundingBox(position);
-	//$scope.issues = IssueService.getIssuesWithinBoundingBox(header, boundingBox, callback);
-
-
-	// Mapbox default map loading
+	// Mapbox default map loading and default properties
 	var mapboxTileLayer = "http://api.tiles.mapbox.com/v4/" + mapboxMapId;
 	mapboxTileLayer = mapboxTileLayer + "/{z}/{x}/{y}.png?access_token=" + mapboxAccessToken;
 	$scope.mapDefaults = {
 		tileLayer: mapboxTileLayer
 	};
 	$scope.mapCenter = {
-		// set default mapCenter
 		lat: 0,
 		lng: 0,
 		zoom: 18
 	};
-
-	MapService.getDeviceLocation(geolocation, $scope, callbackGetDeviceLoc);
 	$scope.mapMarkers = [];
 
+	// start cascade of calls to fill map with position and issues
+	MapService.getDeviceLocation(geolocation, $scope, callbackGetDeviceLoc);
 
+	// initialize event listeners
+	var mapEventsToReload = ['moveend', 'resize'];
+	mapEventsToReload.forEach(function(eventName) {
+		$scope.$on('leafletDirectiveMap.' + eventName, function(event) {
+			MapService.getBoundingBox($scope, callbackGetIssues);
+		})
+	})
 })
 
 
 
-.factory('MapService', function($log) {
-	return {
-		getBoundingBox: function(position) {
-			return {
-				// to be adapted: calculate bounding box from given position
-				'from': {'lng':6.622009, 'lat':46.766129},
-				'to': {'lng':6.651878, 'lat':46.784234}
+.factory('MapService', function(IssueService, $log) {
+
+	function markerAlreadySet(issue, $scope) {
+		var markerAlreadySet = false;
+		$scope.mapMarkers.forEach(function(marker) {
+			if (marker.id == issue.id) {
+				markerAlreadySet = true;
 			}
+		});
+		return markerAlreadySet;
+	}
+
+	return {
+		getBoundingBox: function($scope, callback) {
+			$scope.mapBounds;
+			if ($scope.mapBounds != null) {
+				callback(null);
+			}	
 		},
 		getDeviceLocation: function(geolocation, $scope, callback) {
 			var callbackGeoloc = function(data) {
@@ -77,11 +116,13 @@ angular.module('inspctr.map', [])
 				};
 			}
 		},
-		setMapZoom: function(zoom, $scope) {
+		setMapZoom: function(zoom, $scope, callback) {
 			if ($scope.mapCenter != null) {
 				$scope.mapCenter.zoom = zoom;
+				callback(null);
 			} else {
 				$log.debug("no MapCenter property");
+				callback(err);
 			}
 		},
 		setPositionMarker: function($scope) {
@@ -100,11 +141,44 @@ angular.module('inspctr.map', [])
         		lat: $scope.geoposition.coords.latitude,
         		lng: $scope.geoposition.coords.longitude,
 				icon: local_icons.position_icon,
+				id: "position-icon"
 			});
+    	},
+    	setIssueMarker: function(issues, $scope) {
+    		$log.debug(issues);
+			issues = IssueService.checkPlaceholder(issues);
+    		issues.forEach(function(issue) {
+    			if (!markerAlreadySet(issue, $scope)) {
+    				$scope.mapMarkers.push({
+    					lat: issue.lat,
+						lng: issue.lng,
+						id: issue.id,
+						message: "<p>{{issue.description}}</p><img src='{{issue.imageUrl}}' width='200px' />",
+						getMessageScope: function() {
+							var scope = $scope.$new();
+							scope.issue = issue;
+							return scope;
+						}
+					});
+    			}
+    		})
+    	},
+    	// setMapHeight is needed to make fill the screen with the map.
+    	// the parameter needs a pair of key/value: either pixel or percent: {pixel:200} or {percent:80}
+    	setMapHeight: function(map, win, parameter) {
+    		var mapHeight = win.innerHeight;
+    		$log.debug(map);
+	        $log.debug(win.innerHeight);
+	        $log.debug("a line above is win.*");
+	        if (parameter.pixel != null) {
+	        	mapHeight = mapHeight - parameter.pixel;
+	        	$log.debug("in if pixel");
+	        } else if (parameter.percent != null) {
+	        	mapHeight = mapHeight * parameter.percent / 100;
+	        }
+	        $log.debug(map.offsetHeight);
+	        map.style.height = mapHeight + "px";
+	        $log.debug(map);
     	}
-	}
+    }
 })
-
-function showPosition(position) {
-	return "aaaaa";
-}
