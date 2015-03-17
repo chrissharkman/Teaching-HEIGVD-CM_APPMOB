@@ -39,25 +39,12 @@ angular.module('inspctr.map', [])
 		}
 	};
 
-	// set optimal leaflet height
-	var paramMapHeight = {pixel:88};
-//	document.querySelector('#map-full')
-	MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeight);
-
-	// Mapbox default map loading and default properties
-	var mapboxTileLayer = "http://api.tiles.mapbox.com/v4/" + mapboxMapId;
-	mapboxTileLayer = mapboxTileLayer + "/{z}/{x}/{y}.png?access_token=" + mapboxAccessToken;
-	$scope.mapDefaults = {
-		tileLayer: mapboxTileLayer
-	};
-	$scope.mapCenter = {
-		lat: 0,
-		lng: 0,
-		zoom: 18
-	};
-	$scope.mapMarkers = [];
+	// set optimal leaflet map height
+	var paramMapHeightReduction = {pixel:88};
+	MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeightReduction);
 
 	// start cascade of calls to fill map with position and issues
+	MapService.initializeMap($scope);
 	MapService.getDeviceLocation(geolocation, $scope, callbackGetDeviceLoc);
 
 	// initialize event listeners
@@ -71,7 +58,7 @@ angular.module('inspctr.map', [])
 
 
 
-.factory('MapService', function(IssueService, $log) {
+.factory('MapService', function(mapboxMapId, mapboxAccessToken, IssueService, $log) {
 
 	function markerAlreadySet(issue, $scope) {
 		var markerAlreadySet = false;
@@ -84,6 +71,20 @@ angular.module('inspctr.map', [])
 	}
 
 	return {
+		// initializeMap is a function to make Mapbox default map loading and default properties
+		initializeMap: function($scope) {
+			var mapboxTileLayer = "http://api.tiles.mapbox.com/v4/" + mapboxMapId;
+			mapboxTileLayer = mapboxTileLayer + "/{z}/{x}/{y}.png?access_token=" + mapboxAccessToken;
+			$scope.mapDefaults = {
+				tileLayer: mapboxTileLayer
+			};
+			$scope.mapCenter = {
+				lat: 0,
+				lng: 0,
+				zoom: 18
+			};
+			$scope.mapMarkers = [];
+		},
 		getBoundingBox: function($scope, callback) {
 			$scope.mapBounds;
 			if ($scope.mapBounds != null) {
@@ -145,7 +146,6 @@ angular.module('inspctr.map', [])
 			});
     	},
     	setIssueMarker: function(issues, $scope) {
-    		$log.debug(issues);
 			issues = IssueService.checkPlaceholder(issues);
     		issues.forEach(function(issue) {
     			if (!markerAlreadySet(issue, $scope)) {
@@ -167,18 +167,12 @@ angular.module('inspctr.map', [])
     	// the parameter needs a pair of key/value: either pixel or percent: {pixel:200} or {percent:80}
     	setMapHeight: function(map, win, parameter) {
     		var mapHeight = win.innerHeight;
-    		$log.debug(map);
-	        $log.debug(win.innerHeight);
-	        $log.debug("a line above is win.*");
 	        if (parameter.pixel != null) {
 	        	mapHeight = mapHeight - parameter.pixel;
-	        	$log.debug("in if pixel");
 	        } else if (parameter.percent != null) {
 	        	mapHeight = mapHeight * parameter.percent / 100;
 	        }
-	        $log.debug(map.offsetHeight);
 	        map.style.height = mapHeight + "px";
-	        $log.debug(map);
     	}
     }
 })

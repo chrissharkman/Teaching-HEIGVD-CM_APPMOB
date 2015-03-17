@@ -20,19 +20,24 @@ angular.module('inspctr.issues', [])
 	$scope.issues = IssueService.getIssues(header, callback);
 })
 
-.controller('IssueDetailCtrl', function(IssueService, $scope, $stateParams, placeholderImage, placeholderImagePath, $log) {
-	var callback = function(error, data) {
+.controller('IssueDetailCtrl', function(IssueService, MapService, $scope, $stateParams, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
+
+	var callbackDetails = function(error, data) {
 		if(error != null) {
 			$log.debug(error);
 		} else {
 			$scope.issue = data;
-			if (setPlaceholder($scope.issue, placeholderImage)) {
-				$scope.issue.imageUrl = placeholderImagePath;
-			}
-			$log.debug(data);
+			$scope.issue = IssueService.checkPlaceholder($scope.issue);
 		}
 	};
-	$scope.issue = IssueService.getIssueDetails($stateParams, callback);
+
+	// define leaflet height
+	var param = {percent:50};
+	MapService.setMapHeight(document.querySelector('#map-detail'), $window, param);
+
+	// start cascade of calls to load details, image, map and set map with correct height and marker
+	MapService.initializeMap($scope);
+	$scope.issue = IssueService.getIssueDetails($stateParams, callbackDetails);
 })
 
 .factory('IssueService', function($http, apiUrl, placeholderImage, placeholderImagePath, $log) {
@@ -92,7 +97,6 @@ angular.module('inspctr.issues', [])
 		getIssueDetails: function(stateParams, callback) {
 			var callback;
 			var stateParams;
-			$log.debug("in getIssueDetails");
 			return $http.get(apiUrl + "/issues/" + stateParams.issueId)
 			.success(function(data) {
 				if (typeof callback === "function") {
@@ -105,12 +109,20 @@ angular.module('inspctr.issues', [])
 				}
 			}) 
 		},
+		// checkPlaceholder can take issue or issues as parameter, a check is executed
+		// if issues.id != null, so issues is a single issue
 		checkPlaceholder: function(issues) {
-			issues.forEach(function(issue) {
-				if (setPlaceholder(issue, placeholderImage)) {
-					issue.imageUrl = placeholderImagePath;
+			if (issues.id != null) {
+				if(setPlaceholder(issues, placeholderImage)) {
+					issues.imageUrl = placeholderImagePath;
 				}
-			});
+			} else {
+				issues.forEach(function(issue) {
+					if (setPlaceholder(issue, placeholderImage)) {
+						issue.imageUrl = placeholderImagePath;
+					}
+				});
+			}	
 			return issues;	
 		},
 	};

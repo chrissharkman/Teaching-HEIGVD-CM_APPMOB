@@ -71,6 +71,10 @@ div.inspctr-full-imagebox img {
 	width:100%;
 }
 
+.inspctr-detail-map-height {
+	height: 250px;
+}
+
 /* Full map with issues */
 .inspctr-flexible-map-height {
 	height: 600px;
