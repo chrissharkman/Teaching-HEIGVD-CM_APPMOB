@@ -20,31 +20,78 @@ angular.module('inspctr.issues', [])
 	$scope.issues = IssueService.getIssues(header, callback);
 })
 
-.controller('IssueDetailCtrl', function(IssueService, MapService, $scope, $stateParams, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
+.controller('IssueDetailCtrl', function(IssueService, MapService, $scope, $state, $stateParams, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
+
+	var callbackIssueDeleted = function(error) {
+		if (error != null) {
+			$log.debug("in callbackIssueDeleted error");
+			$log.debug(error);
+		} else {
+			$log.debug("callbackIssueDeleted OK");
+			$state.go("sideMenu.issueList");
+		}
+	}
+
+	var callbackZoom = function(error) {
+		if (error != null) {
+			$log.debug(error);
+		}
+	}
 
 	var callbackDetails = function(error, data) {
-		if(error != null) {
+		if (error != null) {
 			$log.debug(error);
 		} else {
 			$scope.issue = data;
+			$log.debug($scope.issue);
 			$scope.issue = IssueService.checkPlaceholder($scope.issue);
+			MapService.setMapCenterOnIssue($scope.issue, $scope);
+			MapService.setMapZoom(16, $scope, callbackZoom);
+			MapService.setSingleIssueMarker($scope.issue, $scope);
 		}
 	};
 
 	// define leaflet height
-	var param = {percent:50};
+	var param = {percent:35};
 	MapService.setMapHeight(document.querySelector('#map-detail'), $window, param);
 
 	// start cascade of calls to load details, image, map and set map with correct height and marker
 	MapService.initializeMap($scope);
-	$scope.issue = IssueService.getIssueDetails($stateParams, callbackDetails);
+	IssueService.getIssueDetails($stateParams, callbackDetails);
+	$scope.deleteIssue = function() {
+		IssueService.deleteIssueDialog($scope.issue, callbackIssueDeleted);
+	};
 })
 
-.factory('IssueService', function($http, apiUrl, placeholderImage, placeholderImagePath, $log) {
+.controller('NewIssueCtrl', function(IssueService, MapService, $scope, mapboxMapId, mapboxAccessToken, $window, $log) {
+	$scope.newIssue = {};
+	$scope.newIssue.issueType = "Alababa";
+	$scope.showIssueTypePopup = function() {
+		$log.debug("showIssue");
+	}
+})
+
+
+.factory('IssueService', function($http, apiUrl, placeholderImage, placeholderImagePath, $ionicPopup, $log) {
 	// function to determine, if config says that placeholder should be set (true).
 	// Or if the actual issue does not have an actual imageUrl then also set a placeholder.
 	function setPlaceholder(issue, placeholderImage) {
 		return ((placeholderImage === 'true' && placeholderImage !== 'false') || (issue.imageUrl == ''))
+	}
+
+	function deleteIssueFromDB(issue, callback) {
+		$log.debug(issue);
+		return $http.delete(apiUrl + "/issues/" + issue.id)
+			.success(function() {
+				if (typeof callback === "function") {
+					callback(null);
+				}	
+			})
+			.error(function(error) {
+				if (typeof callback === "function") {
+					callback(error);
+				}	
+			})	
 	}
 
 	return {
@@ -124,6 +171,18 @@ angular.module('inspctr.issues', [])
 				});
 			}	
 			return issues;	
+		},
+		// delete issue function with confirmation popup
+		deleteIssueDialog: function(issue, callback) {
+			var confirmPopup = $ionicPopup.confirm({
+				title: 'Delete Issue',
+				template: 'Are you sure you want to delete this issue?'
+			});
+			confirmPopup.then(function(res) {
+				if(res) {
+					deleteIssueFromDB(issue, callback);
+				}
+			});
 		},
 	};
 });

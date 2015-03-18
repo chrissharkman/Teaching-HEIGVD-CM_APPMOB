@@ -10,11 +10,31 @@
 			<img src="{{issue.imageUrl}}">
 		</div>
 		<!-- map -->
-		<leaflet id="map-detail" class="inspctr-detail-map-height" defaults="mapDetailDefaults" center="mapDetailCenter" bounds="mapDetailBounds" markers="mapDetailMarkers" data-tap-disabled="true"></leaflet>
-
-
+		<leaflet id="map-detail" class="inspctr-detail-map-height" defaults="mapDefaults" center="mapCenter" bounds="mapBounds" markers="mapMarkers" data-tap-disabled="false"></leaflet>
 		<div class="padding">
+			<p class="inspctr-state">{{issue.state}}</p>
+			<div data-id="{{issue.assignee.id}}" class="inspctr-group-box">
+				<h2>Assignee</h2>
+				<p ng-if="issue.assignee.name">{{issue.assignee.name}}</p>
+				<p ng-if="issue.assignee.phone">{{issue.assignee.phone}}</p>
+				<p ng-if="issue.assignee.name == null">No person assigned</p>
+			</div>	
+			<div data-id="{{issue.owner.id}}" class="inspctr-group-box">
+				<h2>Owner</h2>
+				<p>{{issue.owner.name}}</p>
+				<p ng-if="issue.owner.phone">{{issue.owner.phone}}</p>
+			</div>
+			<div class="inspctr-group-box">
+				<h2>Actions</h2>
+				<div class="inspctr-action-detail" data-id="{{action.id}}" ng-repeat="action in issue.actions">
+					<p class="date">{{action.actionDate | date:'dd.MM.yyyy HH:mm'}}</p>
+					<h3>{{action.type}}</h3>
+					<p>Reason: {{action.reason}}</p>
+					<p>User: {{action.user}}</p>
+				</div>
+			</div>			
 		</div>
+		<button class="button button-full button-light" ng-click="deleteIssue()">Delete issue</button>
 		<div class="inspctr-bottomblock"></div>
 	</ion-content>
 </ion-view>

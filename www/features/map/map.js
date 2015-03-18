@@ -110,7 +110,19 @@ angular.module('inspctr.map', [])
 				$scope.mapCenter.lat = $scope.geoposition.coords.latitude;
 				$scope.mapCenter.lng = $scope.geoposition.coords.longitude;
 			} else {
-				$log.debug("No $scope.geoposition or $scope.mapCenter found. Default set for mapCenter.")
+				$log.debug("No $scope.geoposition or $scope.mapCenter found. Default set for mapCenter.");
+				$scope.mapCenter = {
+					lat: 46.77,
+					lng: 6.63
+				};
+			}
+		},
+		setMapCenterOnIssue: function(issue, $scope) {
+			if ($scope.mapCenter != null) {
+				$scope.mapCenter.lat = issue.lat;
+				$scope.mapCenter.lng = issue.lng;
+			} else {
+				$log.debug("no $scope.mapCenter found. Default set for mapCenter.");
 				$scope.mapCenter = {
 					lat: 46.77,
 					lng: 6.63
@@ -162,6 +174,15 @@ angular.module('inspctr.map', [])
 					});
     			}
     		})
+    	},
+    	setSingleIssueMarker: function(issue, $scope) {
+    		if (!markerAlreadySet(issue, $scope)) {
+    			$scope.mapMarkers.push({
+    				lat: issue.lat,
+    				lng: issue.lng,
+    				id: issue.id
+    			});
+    		}
     	},
     	// setMapHeight is needed to make fill the screen with the map.
     	// the parameter needs a pair of key/value: either pixel or percent: {pixel:200} or {percent:80}
