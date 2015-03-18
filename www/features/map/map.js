@@ -40,7 +40,7 @@ angular.module('inspctr.map', [])
 	};
 
 	// set optimal leaflet map height
-	var paramMapHeightReduction = {pixel:88};
+	var paramMapHeightReduction = {pixel:44};
 	MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeightReduction);
 
 	// start cascade of calls to fill map with position and issues

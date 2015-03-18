@@ -1,5 +1,5 @@
 <ion-view view-title="Issue List">
-	<ion-content class="glue-scroll-content">
+	<ion-content>
 		<ion-list ng-controller="IssueListCtrl">
 			<ion-item class="item-tumbnail-left" ui-sref="sideMenu.issueDetail({issueId:issue.id})" ng-repeat="issue in issues">
 				<div class="inspctr-thumbnailbox" style="background-image:url('{{issue.imageUrl}}');"></div>

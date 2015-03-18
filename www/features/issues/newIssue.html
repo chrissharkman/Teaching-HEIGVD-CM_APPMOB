@@ -6,15 +6,22 @@
 <div class="list inspctr-form">
 	<label class="item item-input item-stacked-label">
 		<span class="input-label">Issue Type</span>
-		<input ng-model="newIssue.issueType" type="text" ng-click="showIssueTypePopup()" placeholder="Select from list or type new">
+		<input id="issueType" type="text" ng-model="newIssue.issueType" type="text" ng-click="showIssueTypePopup()" placeholder="Select Issue Type">
 	</label>
 	<label class="item item-input item-stacked-label">
-		<span class="input-label">Last Name</span>
-		<input type="text" placeholder="Suhr">
+		<span class="input-label">Description</span>
+		<input type="text" ng-model="newIssue.description" placeholder="Description of issue">
 	</label>
-	<label class="item item-input item-stacked-label">
-		<span class="input-label">Email</span>
-		<input type="text" placeholder="john@suhr.com">
+	<label class="item">
+		<span class="input-label">Location</span>
+		<p>Latitude: {{newIssue.lat}}</p>
+		<p>Longitude: {{newIssue.lng}}</p>
+		<button class="button button-block button-positive" ng-click="">Set Location</button>
+	</label>
+	<label class="item">
+		<span class="input-label">Picture</span>
+		<img ng-if="newIssue.imageUrl">
+		<button class="button button-block button-positive">Add a picture</button>
 	</label>
 </div>
 </ion-content>

@@ -3,10 +3,14 @@
 	Additional styles for inspctr app, adapted for iPhone and iPad.
  */
 
-.bar.bar-header {
+/*
+.bar .bar-header {
 	position: relative;
 }
-
+*/
+.menu .bar-header {
+	position: relative;
+}
 
 
 /* global inspctr stlyling elements */
@@ -55,7 +59,7 @@
 /* Issue List with thumbnails */
 
 .glue-scroll-content {
-	margin-top: -45px;
+	margin-top: -44px;
 }
 
 h2.inspctr-list {
@@ -93,9 +97,8 @@ p.inspctr-showstate {
 /* to make sure that the whole list is displayed */
 div.inspctr-bottomblock {
 	width: 100%;
-	height: 10px;
-	background-color: rgb(240,240,240);
-	margin-bottom:120px;
+	height: 60px;
+	margin-bottom:100px;
 }
 
 /* Issue Detail view */
@@ -124,7 +127,7 @@ div.inspctr-full-imagebox img {
 
 /* Full map with issues */
 .inspctr-flexible-map-height {
-	height: 600px;
+	height: 400px;
 }
 
 
