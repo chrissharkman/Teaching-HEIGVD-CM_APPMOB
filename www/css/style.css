@@ -130,6 +130,16 @@ div.inspctr-full-imagebox img {
 
 /* Create new Issue view */
 
-.input-label {
+.inspctr-form .input-label {
 	color: rgb(56,126,245);
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+.inspctr-create-new-element {
+	color: rgb(56,126,245);
+}
+
+.inspctr-close-popup {
+	color: rgb(245,56,126);
 }

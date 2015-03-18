@@ -63,11 +63,42 @@ angular.module('inspctr.issues', [])
 	};
 })
 
-.controller('NewIssueCtrl', function(IssueService, MapService, $scope, mapboxMapId, mapboxAccessToken, $window, $log) {
+.controller('NewIssueCtrl', function(IssueService, MapService, $scope, $ionicPopup, mapboxMapId, mapboxAccessToken, $window, $log) {
 	$scope.newIssue = {};
-	$scope.newIssue.issueType = "Alababa";
-	$scope.showIssueTypePopup = function() {
-		$log.debug("showIssue");
+
+	var callbackGetIssues = function(error, data) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			var what = {
+				elements: "issueTypes",
+				label: "name",
+				returnValue: "name",
+				setFunction: "setChosenElement",
+				newElementFunction: "createNewElement"
+			}
+			$scope.issueTypes = data;
+			IssueService.buildSelectionPopup(what, $scope);
+		}
+	}	
+
+	var headerGetIssues = {
+		headers: {
+        	//'x-pagination': '10;9',
+        	//'x-sort': 'updatedOn'
+		}	
+	}
+
+	$scope.showIssueTypePopup = function(headerGetIssues) {
+		IssueService.getIssueTypes(headerGetIssues, callbackGetIssues)
+	}
+
+	$scope.setChosenElement = function(returnValue) {
+		$scope.newIssue.issueType = returnValue;
+	}
+
+	$scope.createNewElement = function() {
+		$scope.newIssue.issueType = "";
 	}
 })
 
@@ -184,5 +215,44 @@ angular.module('inspctr.issues', [])
 				}
 			});
 		},
+		getIssueTypes: function(header, callback) {
+			var callback;
+			var header;
+			return $http.get(apiUrl + "/issueTypes", header)
+			.success(function(data) {
+				if (typeof callback === "function") {
+					callback(null, data);
+				}	
+			})
+			.error(function(error) {
+				if (typeof callback === "function") {
+					callback(error, null);
+				}	
+			});
+		},
+		// buildSelectionPopup is a general function to build popups with a content,
+		// that either calls a setChosenElement(id) or a createNewElement()
+		// The what parameter is an object with three properties = {
+		// 		elements: "theElementInScope",
+		//		label: "thePropertyNameToDisplay",
+		//		returnValue: "thePropertyIdToSetIntoFunction",
+		//		setFunction: "nameOfFunctionToSetElement",
+		//		newElementFunction: "nameOfFunctionForNewElement" 	
+		// }
+		buildSelectionPopup: function(what, $scope) {
+			var myPopup = $ionicPopup.show({
+    			template: '<ion-list><ion-item ng-repeat="element in ' + what.elements +'" ng-click="' + what.setFunction + '(\'{{element.' + what.returnValue + '}}\');closePopup()">{{element.' + what.label + '}}</ion-item>'
+    				+ '<ion-item class="inspctr-create-new-element" ng-click="' + what.newElementFunction + '();closePopup()">New</ion-item>'
+    				+ '<ion-item class="inspctr-close-popup" ng-click="closePopup()">Cancel</ion-item></ion-list>',
+    			title: 'Select Issue Type',
+    			subTitle: 'Please stay general',
+    			scope: $scope,
+        	});
+        	$scope.closePopup = function() {
+        		myPopup.close();
+        	}
+		}
 	};
-});
+})
+
+
