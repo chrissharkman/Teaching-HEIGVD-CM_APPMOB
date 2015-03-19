@@ -58,6 +58,13 @@ angular.module('inspctr.map', [])
 
 
 
+.controller('MapSetLocationCtrl', function(mapboxMapId, mapboxAccessToken, geolocation, leafletEvents, $stateParams, $scope, $window, IssueService, MapService, $log) {
+	$log.debug("in MapSetLocationCtr");
+})
+
+
+
+
 .factory('MapService', function(mapboxMapId, mapboxAccessToken, IssueService, $log) {
 
 	function markerAlreadySet(issue, $scope) {

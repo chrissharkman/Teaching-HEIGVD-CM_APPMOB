@@ -43,7 +43,6 @@ angular.module('inspctr.issues', [])
 			$log.debug(error);
 		} else {
 			$scope.issue = data;
-			$log.debug($scope.issue);
 			$scope.issue = IssueService.checkPlaceholder($scope.issue);
 			MapService.setMapCenterOnIssue($scope.issue, $scope);
 			MapService.setMapZoom(16, $scope, callbackZoom);
@@ -63,8 +62,31 @@ angular.module('inspctr.issues', [])
 	};
 })
 
-.controller('NewIssueCtrl', function(IssueService, MapService, $scope, $ionicPopup, mapboxMapId, mapboxAccessToken, $window, $log) {
-	$scope.newIssue = {};
+.controller('NewIssueCtrl', function(IssueService, MapService, $scope, $ionicPopup, $state, $stateParams, mapboxMapId, mapboxAccessToken, $window, $log) {
+	$log.debug("in NewIssueCtrl");
+
+	if ($scope.newIssue == null) {
+		$scope.newIssue = {lng: "",lat: ""};
+	}
+	// twice a call from stateChangeSuccess. Why? 
+	$scope.$on('$stateChangeSuccess', 
+		function(event, toState, toParams, fromState, fromParams){
+    	if (fromState.name == "setLocation") {
+    		setTimeout(function() {
+    			$log.debug(event);
+	    		$scope.newIssue.lat = $stateParams.lat;
+    			$scope.newIssue.lng = $stateParams.lng;
+    		}, 30);	
+    	} 
+	})
+
+	$scope.callbackSetLocation = function(error, data) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			$log.debug("in callback Set location");
+		}
+	}
 
 	var callbackSavedIssueType = function(error, data) {
 		if (error != null) {
@@ -89,6 +111,7 @@ angular.module('inspctr.issues', [])
 			IssueService.buildSelectionPopup(what, $scope);
 		}
 	}	
+
 
 	// if too many results, limit number of results
 	var headerGetIssues = {

@@ -38,7 +38,7 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
     .state('sideMenu.newIssue', {
       // The URL (here "/newIssue") is used only internally with Ionic; you never see it displayed anywhere.
       // In an Angular website, it would be the URL you need to go to with your browser to enter this state.
-      url: '/newIssue',
+      url: '/newIssue/:lng?lat',
       views: {
         // The "tab-newIssue" view corresponds to the <ion-nav-view name="tab-newIssue"> directive used in the tabs.html template.
         'mainContent': {
@@ -85,6 +85,11 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
           templateUrl: 'features/issues/issueDetail.html'
         }
       }
+    })
+
+    .state('setLocation', {
+      url: '/setLocation',
+      templateUrl: 'features/map/locationsetter.html',
     })
 
     .state('login', {
