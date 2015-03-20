@@ -139,6 +139,10 @@ div.inspctr-full-imagebox img {
 	font-weight: bold;
 }
 
+.item p.inspctr-item-input {
+	margin: 8px 0;
+}
+
 .inspctr-create-new-element {
 	color: rgb(56,126,245);
 }

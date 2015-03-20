@@ -62,10 +62,13 @@ angular.module('inspctr.issues', [])
 	};
 })
 
-.controller('NewIssueCtrl', function(IssueService, CameraService, MapService, $scope, $rootScope, $ionicPopup, $state, $stateParams, mapboxMapId, mapboxAccessToken, $window, $log) {
+.controller('NewIssueCtrl', function(IssueService, CameraService, MapService, $scope, $rootScope, $ionicPopup, $state, $stateParams, $http, mapboxMapId, mapboxAccessToken, cameraFunctionalityAvailable, $window, $log) {
 	// initialization of property .newIssue
 	if ($scope.newIssue == null) {
-		$scope.newIssue = {};
+		$scope.newIssue = {
+			cameraFunctionalityAvailable: cameraFunctionalityAvailable,
+			imageUrl: ""
+		};
 	}
 
 	$scope.$on('userSettedLocation', function(event, coords) {
@@ -142,30 +145,56 @@ angular.module('inspctr.issues', [])
 	}
 
 	$scope.addPicture = function() {
-		alert("beginn addPict");
-		CameraService.getPicture({
-			quality: 75,
-			targetWidth: 400,
-			targetHeight: 300,
-			destinationType: Camera.DestinationType.DATA_URL
-		}).then(function(imageData) {
-			// do something with imageData
-			alert("data here from CameraService");
-			// upload the image
-			$http({
-				method: "POST",
-				url: qimgUrl + "/images",
-				headers: {
-					Authorization: "Bearer " + qimgToken
-				},
-				data: {
-					data: imageData
-				}
-			}).success(function(data) {
-				var imageUrl = data.url;
-				// do something with imageUrl
+		if (cameraFunctionalityAvailable == "true") {
+			CameraService.getPicture({
+				quality: 75,
+				targetWidth: 400,
+				targetHeight: 300,
+				destinationType: Camera.DestinationType.DATA_URL
+			}).then(function(imageData) {
+				// do something with imageData
+				alert("data here from CameraService");
+				// upload the image
+				$http({
+					method: "POST",
+					url: qimgUrl + "/images",
+					headers: {
+						Authorization: "Bearer " + qimgToken
+					},
+					data: {
+						data: imageData
+					}
+				}).success(function(data) {
+					$scope.newIssue.imageUrl = data.url;
+					// do something with imageUrl
+				});
 			});
-		});
+		} else {
+			alert("Camera functionality not available on this device.");
+		}
+	}
+
+	$scope.issueComplete = function() {
+		if ($scope.newIssue.issueType != null && $scope.newIssue.description != null && $scope.newIssue.lat != null && $scope.newIssue.lng != null) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	$scope.saveNewIssue = function() {
+		var isComplete = false;
+		isComplete = IssueService.checkIfIssueComplete($scope);
+		if (isComplete) {
+
+		}
+	}
+
+	$scope.clearNewIssue = function() {
+		$scope.newIssue = {
+			cameraFunctionalityAvailable: cameraFunctionalityAvailable,
+			imageUrl: ""
+		}
 	}
 
 })
@@ -365,6 +394,10 @@ angular.module('inspctr.issues', [])
 			$scope.closePopup = function() {
         		myPopup.close();
         	}
+		},
+		checkIfIssueComplete: function($scope) {
+			$scope.issueType != null;
+			return true;
 		}
 	};
 })
@@ -382,5 +415,4 @@ angular.module('inspctr.issues', [])
 			return deferred.promise;
 		}
 	}
-});
-
+})

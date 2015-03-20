@@ -6,5 +6,7 @@
 	"mapboxAccessToken": "ghi",
 	"mapboxMapId": "chris",
 	"qimgUrl": "…",
-	"qimgToken": "…"
+	"qimgToken": "…",
+	"cameraFunctionalityAvailable": "false"
+
 }

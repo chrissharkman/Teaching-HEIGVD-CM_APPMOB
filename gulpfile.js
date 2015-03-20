@@ -66,6 +66,7 @@ function saveConfig(environment) {
     .pipe(replace(/@mapboxMapId@/g, config.mapboxMapId))
     .pipe(replace(/@qimgUrl@/, config.qimgUrl))
     .pipe(replace(/@qimgToken@/, config.qimgToken))
+    .pipe(replace(/@cameraFunctionalityAvailable@/, config.cameraFunctionalityAvailable))
 
     // Save the result in www/js.
     .pipe(gulp.dest('www/js'));

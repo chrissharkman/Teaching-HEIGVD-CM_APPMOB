@@ -86,8 +86,10 @@ angular.module('inspctr.map', [])
 		}
 	};
 
-	var paramMapHeightReduction = {pixel:0};
-	MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeightReduction);
+	setTimeout(function() {
+		var paramMapHeightReduction = {pixel:0};
+		MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeightReduction);		
+	}, 20);
 
 	// start cascade of calls to fill map with position and issues
 	MapService.initializeMap($scope);

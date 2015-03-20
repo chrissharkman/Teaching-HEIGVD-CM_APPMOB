@@ -7,4 +7,5 @@ angular.module('inspctr.constants', [])
 .constant('mapboxMapId', '@mapboxMapId@')
 .constant("qimgUrl", "@qimgUrl@")
 .constant("qimgToken", "@qimgToken@")
+.constant("cameraFunctionalityAvailable", "@cameraFunctionalityAvailable@")
 ;
