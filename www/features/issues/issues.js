@@ -67,7 +67,8 @@ angular.module('inspctr.issues', [])
 	if ($scope.newIssue == null) {
 		$scope.newIssue = {
 			cameraFunctionalityAvailable: cameraFunctionalityAvailable,
-			imageUrl: ""
+			imageUrl: "",
+			tags: ""
 		};
 	}
 	$scope.issueSaved = false;
@@ -75,6 +76,7 @@ angular.module('inspctr.issues', [])
 	$scope.$on('userSettedLocation', function(event, coords) {
 		$scope.newIssue.lat = coords.lat;
 		$scope.newIssue.lng = coords.lng;
+		$scope.$digest();
 	});
 
 	$scope.callbackSetLocation = function(error, data) {
@@ -85,7 +87,7 @@ angular.module('inspctr.issues', [])
 		}
 	}
 
-	var callbackSavedIssue = function(error, data) {
+	var callbackSavedTags = function(error, data) {
 		if (error != null) {
 			$log.debug(error);
 		} else {
@@ -95,6 +97,19 @@ angular.module('inspctr.issues', [])
 				$scope.clearNewIssue();
 				$scope.$digest();
 			}, 2000);
+		}		
+	}
+
+	var callbackSavedIssue = function(error, data) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			var tags = $scope.newIssue.tags.split();
+			if (tags.length > 0) {
+				IssueService.postNewTags(data.id, tags, callbackSavedTags);
+			} else {
+				callbackSavedTags();
+			}	
 		}			
 	}
 
@@ -182,7 +197,6 @@ angular.module('inspctr.issues', [])
 					}
 				}).success(function(data) {
 					$scope.newIssue.imageUrl = data.url;
-					// do something with imageUrl
 				});
 			});
 		} else {
@@ -205,6 +219,7 @@ angular.module('inspctr.issues', [])
 		if ($scope.issueComplete()) {
 			IssueService.postNewIssue($scope.newIssue, callbackSavedIssue);
 		} else {
+			$log.debug("issue was not complete");
 		}
 	}
 
@@ -318,9 +333,24 @@ angular.module('inspctr.issues', [])
 			})
 			.error(function(error) {
 				if (typeof callback === "function") {
-					callback(error, null);
+					callback(error);
 				}	
 			});
+		},
+		postNewTags: function(issueId, tags, callback) {
+			var body = {
+  				"type": "addTags",
+  				"payload": {
+    				"tags": tags
+				}
+			}
+			return $http.post(apiUrl + "/issues/" + issueId + "/actions", body)
+			.success(function(data) {
+				callback(null, data);
+			})
+			.error(function(error) {
+				callback(error)
+			})
 		},
 		// checkPlaceholder can take issue or issues as parameter, a check is executed
 		// if issues.id != null, so issues is a single issue

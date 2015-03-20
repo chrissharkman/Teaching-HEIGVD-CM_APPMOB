@@ -31,6 +31,10 @@
 	<label class="item item-input">
 		<input type="text" placeholder="set image URL manually" ng-model="newIssue.imageUrl">
 	</label>
+	<label class="item item-input item-stacked-label">
+		<span class="input-label">Tags</span>
+		<input type="text" ng-model="newIssue.tags" placeholder="tag, tag, tag">
+	</label>
 	<div id="inspctr-notifications">
 		<div class="bar bar-loading bar-calm" ng-if="issueSaved">
   			Issue Saved
