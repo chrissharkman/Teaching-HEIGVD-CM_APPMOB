@@ -207,7 +207,7 @@ div.inspctr-full-imagebox img {
 }
 
 .inspctr-foreground.button.button-block {
-	position: relative;
-	margin-top: -80px;
+	position: fixed;
+	bottom: 20px;
 	z-index: 100;
 }

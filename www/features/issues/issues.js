@@ -183,8 +183,6 @@ angular.module('inspctr.issues', [])
 				targetHeight: 300,
 				destinationType: Camera.DestinationType.DATA_URL
 			}).then(function(imageData) {
-				// do something with imageData
-				alert("data here from CameraService");
 				// upload the image
 				$http({
 					method: "POST",
