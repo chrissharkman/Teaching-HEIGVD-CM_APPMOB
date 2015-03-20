@@ -62,23 +62,16 @@ angular.module('inspctr.issues', [])
 	};
 })
 
-.controller('NewIssueCtrl', function(IssueService, MapService, $scope, $ionicPopup, $state, $stateParams, mapboxMapId, mapboxAccessToken, $window, $log) {
-	$log.debug("in NewIssueCtrl");
-
+.controller('NewIssueCtrl', function(IssueService, CameraService, MapService, $scope, $rootScope, $ionicPopup, $state, $stateParams, mapboxMapId, mapboxAccessToken, $window, $log) {
+	// initialization of property .newIssue
 	if ($scope.newIssue == null) {
-		$scope.newIssue = {lng: "",lat: ""};
+		$scope.newIssue = {};
 	}
-	// twice a call from stateChangeSuccess. Why? 
-	$scope.$on('$stateChangeSuccess', 
-		function(event, toState, toParams, fromState, fromParams){
-    	if (fromState.name == "setLocation") {
-    		setTimeout(function() {
-    			$log.debug(event);
-	    		$scope.newIssue.lat = $stateParams.lat;
-    			$scope.newIssue.lng = $stateParams.lng;
-    		}, 30);	
-    	} 
-	})
+
+	$scope.$on('userSettedLocation', function(event, coords) {
+		$scope.newIssue.lat = coords.lat;
+		$scope.newIssue.lng = coords.lng;
+	});
 
 	$scope.callbackSetLocation = function(error, data) {
 		if (error != null) {
@@ -134,6 +127,31 @@ angular.module('inspctr.issues', [])
 		setTimeout(function() {
 			IssueService.createNewIssuePopup(IssueService.saveIssueType, callbackSavedIssueType, $scope);
 		}, 30);
+	}
+
+	$scope.setLocation = function() {
+		var coords = {
+			lat: $scope.newIssue.lat,
+			lng: $scope.newIssue.lng
+		}
+
+		setTimeout(function() {
+			$rootScope.$broadcast('actualIssuePosition', coords);		
+		}, 20);
+		$state.go('setLocation');
+	}
+
+	$scope.addPicture = function() {
+		alert("beginn addPict");
+		CameraService.getPicture({
+			quality: 75,
+			targetWidth: 400,
+			targetHeight: 300,
+			destinationType: Camera.DestinationType.DATA_URL
+		}).then(function(imageData) {
+			// do something with imageData
+			alert("data here from CameraService");
+		});
 	}
 
 })
@@ -337,4 +355,18 @@ angular.module('inspctr.issues', [])
 	};
 })
 
+.factory("CameraService", function($q) {
+	return {
+		getPicture: function(options) {
+			var deferred = $q.defer();
+			navigator.camera.getPicture(function(result) {
+			// do any magic you need
+			deferred.resolve(result);
+			}, function(err) {
+				deferred.reject(err);
+			}, options);
+			return deferred.promise;
+		}
+	}
+});
 

@@ -2,7 +2,9 @@
 	"apiUrl":"http://url.bidon.ch",
 	"placeholderImage":"http://nice.try.ch",
 	"placeholderImagePath": "img/placeholder.png",
-  "mapboxDefaultSecretToken": "abc",
-  "mapboxAccessToken": "ghi",
-  "mapboxMapId": "chris"
+	"mapboxDefaultSecretToken": "abc",
+	"mapboxAccessToken": "ghi",
+	"mapboxMapId": "chris",
+	"qimgUrl": "…",
+	"qimgToken": "…"
 }

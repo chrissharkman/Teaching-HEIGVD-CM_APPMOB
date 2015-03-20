@@ -64,6 +64,8 @@ function saveConfig(environment) {
     .pipe(replace(/@mapboxDefaultSecretToken@/g, config.mapboxDefaultSecretToken))
     .pipe(replace(/@mapboxAccessToken@/g, config.mapboxAccessToken))
     .pipe(replace(/@mapboxMapId@/g, config.mapboxMapId))
+    .pipe(replace(/@qimgUrl@/, config.qimgUrl))
+    .pipe(replace(/@qimgToken@/, config.qimgToken))
 
     // Save the result in www/js.
     .pipe(gulp.dest('www/js'));

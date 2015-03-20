@@ -146,3 +146,15 @@ div.inspctr-full-imagebox img {
 .inspctr-close-popup {
 	color: rgb(245,56,126);
 }
+
+/* Location setter */
+.inspctr-background {
+	position: relative;
+	z-index: -100
+}
+
+.inspctr-foreground.button.button-block {
+	position: relative;
+	margin-top: -80px;
+	z-index: 100;
+}

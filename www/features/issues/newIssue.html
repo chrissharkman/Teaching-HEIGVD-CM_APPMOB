@@ -4,9 +4,10 @@
 	<h2>Create a new Issue</h2>
 </div>
 <div class="list inspctr-form">
-	<label class="item item-input item-stacked-label">
+	<label class="item item-input item-stacked-label" ng-click="showIssueTypePopup()">
 		<span class="input-label">Issue Type</span>
-		<input id="issueType" type="text" ng-model="newIssue.issueType" type="text" ng-click="showIssueTypePopup()" placeholder="Select Issue Type">
+		<p ng-if="newIssue.issueType == null">Select Issue Type</p>
+		<p ng-if="newIssue.issueType">{{newIssue.issueType}}</p>
 	</label>
 	<label class="item item-input item-stacked-label">
 		<span class="input-label">Description</span>
@@ -16,13 +17,14 @@
 		<span class="input-label">Location</span>
 		<p>Latitude: {{newIssue.lat}}</p>
 		<p>Longitude: {{newIssue.lng}}</p>
-		<button class="button button-block button-positive" ui-sref="setLocation()">Set Location</button>
+		<button class="button button-block button-positive" ng-click="setLocation()">Set Location</button>
 	</label>
 	<label class="item">
 		<span class="input-label">Picture</span>
 		<img ng-if="newIssue.imageUrl">
-		<button class="button button-block button-positive">Add a picture</button>
+		<button class="button button-block button-positive" ng-click="addPicture()">Add a picture</button>
 	</label>
+	<button class="button button-full button-calm" ng-click="saveNewIssue">Save</button>
 </div>
 </ion-content>
 </ion-view>

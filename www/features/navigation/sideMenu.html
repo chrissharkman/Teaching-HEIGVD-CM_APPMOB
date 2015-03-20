@@ -14,7 +14,7 @@
 			<ion-item ui-sref="sideMenu.issueList" menu-close>Issue List</ion-item>
 			<ion-item ui-sref="sideMenu.myIssues" menu-close>My Issues</ion-item>
 			<ion-item ui-sref="sideMenu.issueMap" menu-close>Issue Map</ion-item>
-			<ion-item ui-sref="sideMenu.newIssue" menu-close>New Issue</ion-item>
+			<ion-item ui-sref="sideMenu.newIssue({lat: '0', lng: '0'})" menu-close>New Issue</ion-item>
 			<ion-item ng-click="logOut();" ng-controller="LogoutCtrl">Logout</ion-item>
 		</ion-list>
 	</ion-side-menu>

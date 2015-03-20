@@ -11,7 +11,7 @@ angular.module('inspctr.map', [])
 		}	
 	};
 
-	var callbackGetIssues = function(error) {
+	var callbackGetIssues = function(error, data) {
 		if (error != null) {
 			$log.debug(error);
 		} else {
@@ -21,7 +21,7 @@ angular.module('inspctr.map', [])
 		}
 	};
 
-	var callbackGetBoundingBox = function(error) {
+	var callbackGetBoundingBox = function(error, data) {
 		if (error != null) {
 			$log.debug(error);
 		} else {
@@ -29,7 +29,7 @@ angular.module('inspctr.map', [])
 		}
 	};
 
-	var callbackGetDeviceLoc = function(error) {
+	var callbackGetDeviceLoc = function(error, data) {
 		if(error != null) {
 			$log.debug(error)
 		} else {
@@ -58,10 +58,52 @@ angular.module('inspctr.map', [])
 
 
 
-.controller('MapSetLocationCtrl', function(mapboxMapId, mapboxAccessToken, geolocation, leafletEvents, $stateParams, $scope, $window, IssueService, MapService, $log) {
-	$log.debug("in MapSetLocationCtr");
-})
+.controller('MapSetLocationCtrl', function(mapboxMapId, mapboxAccessToken, geolocation, leafletEvents, $ionicHistory, $stateParams, $scope, $rootScope, $window, IssueService, MapService, $log) {
 
+	$scope.$on('actualIssuePosition', function(event, coords) {
+		if (coords.lat == null) {
+			MapService.getDeviceLocation(geolocation, $scope, callbackGetDeviceLoc);	
+		} else {
+			MapService.setMapCenterOnIssue(coords, $scope);
+			MapService.setMapZoom(17, $scope, callbackZoomMap);
+			MapService.setIssueLocationMarker(coords.lat, coords.lng, $scope);
+		}
+	});
+
+	var callbackZoomMap = function(error, data) {
+		if (error != null) {
+			$log.debug(error);
+		}
+	}
+
+	var callbackGetDeviceLoc = function(error, data) {
+		if(error != null) {
+			$log.debug(error)
+		} else {
+			MapService.setMapCenter($scope);
+			MapService.setMapZoom(17, $scope, callbackZoomMap);
+			MapService.setIssueLocationMarker($scope.geoposition.coords.latitude, $scope.geoposition.coords.longitude, $scope);
+		}
+	};
+
+	var paramMapHeightReduction = {pixel:0};
+	MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeightReduction);
+
+	// start cascade of calls to fill map with position and issues
+	MapService.initializeMap($scope);
+
+	// function to return data to newIssue-View via $rootScope.$broadcast, data set from scope.mapMarker
+	$scope.goBackAndBroadcast = function() {
+		var coords = {
+			lat: $scope.mapMarkers[0].lat,
+			lng: $scope.mapMarkers[0].lng
+		}
+		setTimeout(function() {
+			$rootScope.$broadcast('userSettedLocation', coords);
+		}, 20);
+		$ionicHistory.goBack();
+	}
+})
 
 
 
@@ -181,6 +223,13 @@ angular.module('inspctr.map', [])
 					});
     			}
     		})
+    	},
+    	setIssueLocationMarker: function(latitude, longitude, $scope) {
+    		$scope.mapMarkers[0] = {
+    			lat: latitude,
+    			lng: longitude,
+    			draggable: true
+    		}
     	},
     	setSingleIssueMarker: function(issue, $scope) {
     		if (!markerAlreadySet(issue, $scope)) {
