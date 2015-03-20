@@ -11,11 +11,11 @@
       		<h1 class="title">Menu</h1>
     	</ion-header-bar>
 		<ion-list>
-			<ion-item ui-sref="sideMenu.issueList" menu-close>Issue List</ion-item>
-			<ion-item ui-sref="sideMenu.myIssues" menu-close>My Issues</ion-item>
-			<ion-item ui-sref="sideMenu.issueMap" menu-close>Issue Map</ion-item>
-			<ion-item ui-sref="sideMenu.newIssue({lat: '0', lng: '0'})" menu-close>New Issue</ion-item>
-			<ion-item ng-click="logOut();" ng-controller="LogoutCtrl">Logout</ion-item>
+			<ion-item ui-sref="sideMenu.issueList" menu-close class="item-icon-left"><i class="icon ion-grid"></i>Issue List</ion-item>
+			<ion-item ui-sref="sideMenu.myIssues" menu-close class="item-icon-left"><i class="icon ion-clipboard"></i>My Issues</ion-item>
+			<ion-item ui-sref="sideMenu.issueMap" menu-close class="item-icon-left"><i class="icon ion-map"></i>Issue Map</ion-item>
+			<ion-item ui-sref="sideMenu.newIssue({lat: '0', lng: '0'})" menu-close class="item-icon-left"><i class="icon ion-compose"></i>New Issue</ion-item>
+			<ion-item ng-click="logOut();" ng-controller="LogoutCtrl" class="item-icon-left"><i class="icon ion-backspace-outline"></i>Logout</ion-item>
 		</ion-list>
 	</ion-side-menu>
 </ion-side-menus>

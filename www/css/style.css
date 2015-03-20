@@ -3,17 +3,12 @@
 	Additional styles for inspctr app, adapted for iPhone and iPad.
  */
 
-/*
-.bar .bar-header {
-	position: relative;
-}
-*/
 .menu .bar-header {
 	position: relative;
 }
 
 
-/* global inspctr stlyling elements */
+/********* global inspctr stlyling elements ***********/
 .inspctr-state {
 
 }
@@ -56,7 +51,7 @@
 	color: rgb(56,126,245);
 }
 
-/* Issue List with thumbnails */
+/*********** Issue List with thumbnails *************/
 
 .glue-scroll-content {
 	margin-top: -44px;
@@ -101,7 +96,7 @@ div.inspctr-bottomblock {
 	margin-bottom:100px;
 }
 
-/* Issue Detail view */
+/******** Issue Detail view *************/
 
 p.inspctr-issue-date {
 	font-size: 0.65em;
@@ -125,13 +120,13 @@ div.inspctr-full-imagebox img {
 }
 
 
-/* Full map with issues */
+/*********** Full map with issues **********/
 .inspctr-flexible-map-height {
 	height: 400px;
 }
 
 
-/* Create new Issue view */
+/********** Create new Issue view ************/
 
 .inspctr-form .input-label {
 	color: rgb(56,126,245);
@@ -150,6 +145,60 @@ div.inspctr-full-imagebox img {
 .inspctr-close-popup {
 	color: rgb(245,56,126);
 }
+
+.bar.bar-loading {
+  display: block;
+  height: 30px;
+  
+  /** for Notifications: added from example on http://forum.ionicframework.com/t/flash-message/5735; **/
+  /* starts right below a normal header */
+  top: 0;
+  
+  /* make the text centered vertically and horizontally */
+  text-align: center;
+  padding: 0;
+  line-height: 30px;
+
+  /* transition 'sliding down' (check below)*/
+  -webkit-transition: 200ms all;
+}
+
+
+/* 
+ * make the content's top changes animate. might not always look good, but looks
+ * good when our loader is added & removed
+ */
+.has-header {
+  -webkit-transition: 200ms top;
+}
+/*
+.has-header.has-loading {
+   44px (header) + 24px 
+  top: 68px;
+}*/
+
+/* make loading bar slide up/down */
+.bar-loading.ng-enter,
+.bar-loading.ng-leave.ng-leave-active {
+  height: 0;
+  border-width: 0px;
+}
+.bar-loading.ng-enter.ng-enter-active,
+.bar-loading.ng-leave {
+  height: 30px;
+  border-width: 1px;
+}
+
+#inspctr-notifications {
+	position: relative;
+	z-index: 200;
+	top: 0;
+	width: 100%;
+	height: 30px;
+	margin: 20px 0;
+}
+
+
 
 /* Location setter */
 .inspctr-background {

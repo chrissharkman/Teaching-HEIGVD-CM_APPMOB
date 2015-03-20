@@ -70,6 +70,7 @@ angular.module('inspctr.issues', [])
 			imageUrl: ""
 		};
 	}
+	$scope.issueSaved = false;
 
 	$scope.$on('userSettedLocation', function(event, coords) {
 		$scope.newIssue.lat = coords.lat;
@@ -82,6 +83,19 @@ angular.module('inspctr.issues', [])
 		} else {
 			$log.debug("in callback Set location");
 		}
+	}
+
+	var callbackSavedIssue = function(error, data) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			$scope.issueSaved = true;
+			setTimeout(function() {
+				$scope.issueSaved = false;
+				$scope.clearNewIssue();
+				$scope.$digest();
+			}, 2000);
+		}			
 	}
 
 	var callbackSavedIssueType = function(error, data) {
@@ -100,6 +114,7 @@ angular.module('inspctr.issues', [])
 				elements: "issueTypes",
 				label: "name",
 				returnValue: "name",
+				id: "id",
 				setFunction: "setChosenElement",
 				newElementFunction: "createNewElement"
 			}
@@ -121,8 +136,9 @@ angular.module('inspctr.issues', [])
 		IssueService.getIssueTypes(headerGetIssues, callbackGetIssues)
 	}
 
-	$scope.setChosenElement = function(returnValue) {
+	$scope.setChosenElement = function(returnValue, id) {
 		$scope.newIssue.issueType = returnValue;
+		$scope.newIssue.issueTypeId = id;
 	}
 
 	$scope.createNewElement = function() {
@@ -175,7 +191,10 @@ angular.module('inspctr.issues', [])
 	}
 
 	$scope.issueComplete = function() {
-		if ($scope.newIssue.issueType != null && $scope.newIssue.description != null && $scope.newIssue.lat != null && $scope.newIssue.lng != null) {
+		if ($scope.newIssue.issueType != null 
+			&& $scope.newIssue.description != null 
+			&& $scope.newIssue.lat != null 
+			&& $scope.newIssue.lng != null) {
 			return true
 		} else {
 			return false
@@ -183,10 +202,9 @@ angular.module('inspctr.issues', [])
 	}
 
 	$scope.saveNewIssue = function() {
-		var isComplete = false;
-		isComplete = IssueService.checkIfIssueComplete($scope);
-		if (isComplete) {
-
+		if ($scope.issueComplete()) {
+			IssueService.postNewIssue($scope.newIssue, callbackSavedIssue);
+		} else {
 		}
 	}
 
@@ -284,6 +302,26 @@ angular.module('inspctr.issues', [])
 				}
 			}) 
 		},
+		postNewIssue: function(issue, callback) {
+			var body = {
+				"description": issue.description,
+				"lng": issue.lng,
+				"lat": issue.lat,
+				"imageUrl": issue.imageUrl,
+				"issueTypeId": issue.issueTypeId
+			}
+			return $http.post(apiUrl + "/issues", body)
+			.success(function(data) {
+				if (typeof callback === "function") {
+					callback(null, data);
+				}
+			})
+			.error(function(error) {
+				if (typeof callback === "function") {
+					callback(error, null);
+				}	
+			});
+		},
 		// checkPlaceholder can take issue or issues as parameter, a check is executed
 		// if issues.id != null, so issues is a single issue
 		checkPlaceholder: function(issues) {
@@ -354,7 +392,7 @@ angular.module('inspctr.issues', [])
 		// }
 		buildSelectionPopup: function(what, $scope) {
 			var myPopup = $ionicPopup.show({
-    			template: '<ion-list><ion-item ng-repeat="element in ' + what.elements +'" ng-click="' + what.setFunction + '(\'{{element.' + what.returnValue + '}}\');closePopup()">{{element.' + what.label + '}}</ion-item>'
+    			template: '<ion-list><ion-item ng-repeat="element in ' + what.elements +'" ng-click="' + what.setFunction + '(\'{{element.' + what.returnValue + '}}\',\'{{element.' + what.id +'}}\');closePopup()">{{element.' + what.label + '}}</ion-item>'
     				+ '<ion-item class="inspctr-create-new-element" ng-click="' + what.newElementFunction + '();closePopup()">New</ion-item>'
     				+ '<ion-item class="inspctr-close-popup" ng-click="closePopup()">Cancel</ion-item></ion-list>',
     			title: 'Select Issue Type',
@@ -394,10 +432,6 @@ angular.module('inspctr.issues', [])
 			$scope.closePopup = function() {
         		myPopup.close();
         	}
-		},
-		checkIfIssueComplete: function($scope) {
-			$scope.issueType != null;
-			return true;
 		}
 	};
 })

@@ -60,16 +60,6 @@ angular.module('inspctr.map', [])
 
 .controller('MapSetLocationCtrl', function(mapboxMapId, mapboxAccessToken, geolocation, leafletEvents, $ionicHistory, $stateParams, $scope, $rootScope, $window, IssueService, MapService, $log) {
 
-	$scope.$on('actualIssuePosition', function(event, coords) {
-		if (coords.lat == null) {
-			MapService.getDeviceLocation(geolocation, $scope, callbackGetDeviceLoc);	
-		} else {
-			MapService.setMapCenterOnIssue(coords, $scope);
-			MapService.setMapZoom(17, $scope, callbackZoomMap);
-			MapService.setIssueLocationMarker(coords.lat, coords.lng, $scope);
-		}
-	});
-
 	var callbackZoomMap = function(error, data) {
 		if (error != null) {
 			$log.debug(error);
@@ -85,6 +75,16 @@ angular.module('inspctr.map', [])
 			MapService.setIssueLocationMarker($scope.geoposition.coords.latitude, $scope.geoposition.coords.longitude, $scope);
 		}
 	};
+
+	$scope.$on('actualIssuePosition', function(event, coords) {
+		if (coords.lat == null) {
+			MapService.getDeviceLocation(geolocation, $scope, callbackGetDeviceLoc);	
+		} else {
+			MapService.setMapCenterOnIssue(coords, $scope);
+			MapService.setMapZoom(17, $scope, callbackZoomMap);
+			MapService.setIssueLocationMarker(coords.lat, coords.lng, $scope);
+		}
+	});
 
 	setTimeout(function() {
 		var paramMapHeightReduction = {pixel:0};
@@ -105,6 +105,12 @@ angular.module('inspctr.map', [])
 		}, 20);
 		$ionicHistory.goBack();
 	}
+
+	$scope.localisationReadyCall = function() {
+		$scope.localisationReady = true;
+	}
+
+
 })
 
 
@@ -231,7 +237,8 @@ angular.module('inspctr.map', [])
     			lat: latitude,
     			lng: longitude,
     			draggable: true
-    		}
+    		};
+    		$scope.localisationReadyCall();
     	},
     	setSingleIssueMarker: function(issue, $scope) {
     		if (!markerAlreadySet(issue, $scope)) {

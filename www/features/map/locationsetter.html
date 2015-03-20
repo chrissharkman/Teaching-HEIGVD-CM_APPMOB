@@ -1,6 +1,6 @@
 <ion-view view-title="Location Setter">
 	<ion-content ng-controller="MapSetLocationCtrl">
 		<leaflet id="map-full" class="inspctr-flexible-map-height inspctr-background" defaults="mapDefaults" center="mapCenter" bounds="mapBounds" markers="mapMarkers" data-tap-disabled="true"></leaflet>
-		<button class="button button-block button-positive inspctr-foreground" ng-click="goBackAndBroadcast()">OK</button>
+		<button ng-show="localisationReady" class="button button-block button-positive inspctr-foreground" ng-click="goBackAndBroadcast()">OK</button>
 	</ion-content>
 </ion-view>
