@@ -7,8 +7,8 @@
       "proxyUrl": "https://fierce-sierra-5366.herokuapp.com/api"
     },
     {
-	    "path": "/qimg-proxy",
-		  "proxyUrl": "https://warm-bastion-3094.herokuapp.com/api"
-	}	
+      "path": "/qimg-proxy",
+      "proxyUrl": "https://warm-bastion-3094.herokuapp.com/api"
+    }
   ]
 }

@@ -151,6 +151,20 @@ angular.module('inspctr.issues', [])
 		}).then(function(imageData) {
 			// do something with imageData
 			alert("data here from CameraService");
+			// upload the image
+			$http({
+				method: "POST",
+				url: qimgUrl + "/images",
+				headers: {
+					Authorization: "Bearer " + qimgToken
+				},
+				data: {
+					data: imageData
+				}
+			}).success(function(data) {
+				var imageUrl = data.url;
+				// do something with imageUrl
+			});
 		});
 	}
 
