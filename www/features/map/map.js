@@ -89,7 +89,7 @@ angular.module('inspctr.map', [])
 	setTimeout(function() {
 		var paramMapHeightReduction = {pixel:0};
 		MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeightReduction);
-	}, 20);
+	}, 40);
 
 	// start cascade of calls to initialize map
 	MapService.initializeMap($scope);
@@ -97,13 +97,12 @@ angular.module('inspctr.map', [])
 	// function to return data to newIssue-View via $rootScope.$broadcast, data set from scope.mapMarker
 	$scope.goBackAndBroadcast = function() {
 		var coords = {
-			lat: $scope.mapMarkers[0].lat,
-			lng: $scope.mapMarkers[0].lng
+			lat: $scope.mapMarkers.issue.lat,
+			lng: $scope.mapMarkers.issue.lng
 		}
-		$log.debug($scope.mapMarkers);
 		setTimeout(function() {
 			$rootScope.$broadcast('userSettedLocation', coords);
-		}, 40);
+		}, 20);
 		$ionicHistory.goBack();
 	}
 
@@ -137,8 +136,8 @@ angular.module('inspctr.map', [])
 				tileLayer: mapboxTileLayer
 			};
 			$scope.mapCenter = {
-				lat: 0,
-				lng: 0,
+				lat: 46.94754502213663,
+				lng: 7.440694570541382,
 				zoom: 18
 			};
 			$scope.mapMarkers = [];
@@ -157,6 +156,10 @@ angular.module('inspctr.map', [])
     		if (geolocation.getLocation()) {
     			geolocation.getLocation().then(function(data) {
     				callbackGeoloc(data);
+    				callback(null);
+    			}).catch(function(data) {
+    				$scope.geoposition.coords.latitude = 46.94754502213663;
+    				$scope.geoposition.coords.longitude = 7.440694570541382;
     				callback(null);
     			});
     		} else { 
@@ -234,24 +237,22 @@ angular.module('inspctr.map', [])
     		})
     	},
     	setIssueLocationMarker: function(latitude, longitude, $scope) {
-    		// angular.extend($scope, {
-    		// 	markers: {
-    		// 		issue: {
-    		// 			lat: latitude,
-    		// 			lng: longitude,
-    		// 			focus: true,
-    		// 			draggable: true
-    		// 		}
-    		// 	}
-    		// })
-    		$scope.mapMarkers[0] = {
-    			lat: latitude,
-    			lng: longitude,
-    			draggable: true,
-    		};
-   //  		$scope.$on('leafletDirectiveMarker.dragend', function() {
-			// 	$log.debug($scope.mapMarkers[0]);
-			// });
+    		// check if issue marker is already positionned. if yes, just set new lat + lng, if no, extend scope
+    		if ($scope.mapMarkers.issue != null) {
+    			$scope.mapMarkers.issue.lat = latitude;
+    			$scope.mapMarkers.issue.lng = longitude;
+    		} else {
+    			angular.extend($scope, {
+    				mapMarkers: {
+    					issue: {
+    						lat: latitude,
+    						lng: longitude,
+    						focus: true,
+    						draggable: true
+    					}
+    				}
+    			});
+    		}
     		$scope.localisationReadyCall();
     	},
     	setSingleIssueMarker: function(issue, $scope) {

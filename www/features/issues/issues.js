@@ -62,7 +62,7 @@ angular.module('inspctr.issues', [])
 	};
 })
 
-.controller('NewIssueCtrl', function(IssueService, CameraService, MapService, $scope, $rootScope, $ionicPopup, $state, $stateParams, $http, mapboxMapId, mapboxAccessToken, cameraFunctionalityAvailable, qimgUrl, qimgToken, $window, $log) {
+.controller('NewIssueCtrl', function(IssueService, CameraService, MapService, $scope, $rootScope, $ionicPopup, $state, $stateParams, $http, mapboxMapId, mapboxAccessToken, cameraFunctionalityAvailable, geolocation, qimgUrl, qimgToken, $window, $log) {
 	// initialization of property .newIssue
 	if ($scope.newIssue == null) {
 		$scope.newIssue = {
@@ -70,6 +70,10 @@ angular.module('inspctr.issues', [])
 			imageUrl: "",
 			tags: ""
 		};
+		geolocation.getLocation().then(function(data){
+			// function to activate geolocation before entering setLocation.
+			// workaround for location bug.
+		});
 	}
 	$scope.issueSaved = false;
 
