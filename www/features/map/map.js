@@ -88,10 +88,10 @@ angular.module('inspctr.map', [])
 
 	setTimeout(function() {
 		var paramMapHeightReduction = {pixel:0};
-		MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeightReduction);		
+		MapService.setMapHeight(document.querySelector('#map-full'), $window, paramMapHeightReduction);
 	}, 20);
 
-	// start cascade of calls to fill map with position and issues
+	// start cascade of calls to initialize map
 	MapService.initializeMap($scope);
 
 	// function to return data to newIssue-View via $rootScope.$broadcast, data set from scope.mapMarker
@@ -100,9 +100,10 @@ angular.module('inspctr.map', [])
 			lat: $scope.mapMarkers[0].lat,
 			lng: $scope.mapMarkers[0].lng
 		}
+		$log.debug($scope.mapMarkers);
 		setTimeout(function() {
 			$rootScope.$broadcast('userSettedLocation', coords);
-		}, 20);
+		}, 40);
 		$ionicHistory.goBack();
 	}
 
@@ -233,11 +234,24 @@ angular.module('inspctr.map', [])
     		})
     	},
     	setIssueLocationMarker: function(latitude, longitude, $scope) {
+    		// angular.extend($scope, {
+    		// 	markers: {
+    		// 		issue: {
+    		// 			lat: latitude,
+    		// 			lng: longitude,
+    		// 			focus: true,
+    		// 			draggable: true
+    		// 		}
+    		// 	}
+    		// })
     		$scope.mapMarkers[0] = {
     			lat: latitude,
     			lng: longitude,
-    			draggable: true
+    			draggable: true,
     		};
+   //  		$scope.$on('leafletDirectiveMarker.dragend', function() {
+			// 	$log.debug($scope.mapMarkers[0]);
+			// });
     		$scope.localisationReadyCall();
     	},
     	setSingleIssueMarker: function(issue, $scope) {

@@ -62,7 +62,7 @@ angular.module('inspctr.issues', [])
 	};
 })
 
-.controller('NewIssueCtrl', function(IssueService, CameraService, MapService, $scope, $rootScope, $ionicPopup, $state, $stateParams, $http, mapboxMapId, mapboxAccessToken, cameraFunctionalityAvailable, $window, $log) {
+.controller('NewIssueCtrl', function(IssueService, CameraService, MapService, $scope, $rootScope, $ionicPopup, $state, $stateParams, $http, mapboxMapId, mapboxAccessToken, cameraFunctionalityAvailable, qimgUrl, qimgToken, $window, $log) {
 	// initialization of property .newIssue
 	if ($scope.newIssue == null) {
 		$scope.newIssue = {
@@ -171,7 +171,7 @@ angular.module('inspctr.issues', [])
 
 		setTimeout(function() {
 			$rootScope.$broadcast('actualIssuePosition', coords);		
-		}, 20);
+		}, 40);
 		$state.go('setLocation');
 	}
 
@@ -183,7 +183,6 @@ angular.module('inspctr.issues', [])
 				targetHeight: 300,
 				destinationType: Camera.DestinationType.DATA_URL
 			}).then(function(imageData) {
-				// upload the image
 				$http({
 					method: "POST",
 					url: qimgUrl + "/images",
