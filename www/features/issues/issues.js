@@ -2,32 +2,157 @@
 
 angular.module('inspctr.issues', [])
 
-.controller('IssueListCtrl', function(IssueService, $scope, placeholderImage, placeholderImagePath, $log) {
+.controller('IssueListCtrl', function(IssueService, $scope, $filter, $filter, placeholderImage, placeholderImagePath, $log) {
+	var firstSetLoaded = false;
+	var moreDataAvailable = true;
+
 	var callback = function(error, data) {
-		if(error != null) {
+		if (error != null) {
 			$log.debug(error)
 		} else {
+			$scope.loadedPages++;
 			$scope.issues = data;
 			$scope.issues = IssueService.checkPlaceholder($scope.issues);
+			firstSetLoaded = true;
 		}
-	};
+	}
+
+	$scope.loadedPages = 0;
+	$scope.itemsPerPage = 12;
 	var header = {
 		headers: {
-        'x-pagination': '10;9',
-        'x-sort': 'updatedOn'
+        'x-pagination': "" + $scope.loadedPages + ";" + $scope.itemsPerPage + "",
+        'x-sort': '-updatedOn'
 		}
 	}		
 	$scope.issues = IssueService.getIssues(header, callback);
+	// listener to erase deleted issues
+	$scope.$on('userDeletedIssue', function(event, issueId) {
+		var notIssueId = "!" + issueId;
+		$scope.issues = $filter('filter') ($scope.issues, {id:notIssueId});
+	});
+	// listener to remove all items from list and reload freshly also newly created items
+	$scope.$on('userInsertedIssue', function(event) {
+		$scope.issues = [];
+	});
+
+	//// functionality for data loading in list
+
+	$scope.loadMoreData = function() {
+		var callbackAddMore = function(error, data) {
+			if (error != null) {
+				$log.debug(error);
+			} else {
+				if (data.length == 0) {
+					moreDataAvailable = false;
+				} else {
+					data.forEach(function(issue) {
+						$scope.issues.push(issue);
+						$scope.issues = IssueService.checkPlaceholder($scope.issues);
+					});
+				}	
+				$scope.loadedPages++;
+			 	$scope.$broadcast('scroll.infiniteScrollComplete');
+			}
+		}
+		var header = {
+			headers: {
+        	'x-pagination': "" + $scope.loadedPages + ";" + $scope.itemsPerPage + "",
+        	'x-sort': '-updatedOn'
+			}
+		}
+		$scope.addIssues = IssueService.getIssues(header, callbackAddMore);
+	}
+
+	$scope.moreDataCanBeLoaded = function() {
+		if (firstSetLoaded && moreDataAvailable) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	//// swipe functionality functions
+
+	var postAssignAction = function() {
+		$log.debug("in assignIssue");
+		var type = "assign";
+		var comment = "";
+		IssueService.changeIssueStatus(issueId, type, comment, $scope.issueAction.assigneeId, callbackChangeIssueStatus);		
+	}
+
+	var callbackGetUsers = function(error, data) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			$log.debug("returned data:");
+			$log.debug(data);
+			var what = {
+				elements: "issueAction.users",
+				label: "firstname + \" \" + element.lastname",
+				returnValue: "id",
+				id: "id",
+				setFunction: "setChosenElement",
+				newElementFunction: "",
+				title: "Assign Staff",
+				subTitle: "to the issue",
+				newElementFunctionPossible: false 	
+			}
+			$scope.issueAction = {users:null};
+			$scope.issueAction.users = data;
+			IssueService.buildSelectionPopup(what, $scope);
+		}
+	}
+
+	var callbackChangeIssueStatus = function(error, data) {
+		if (error != null) {
+			$log.debug(error)
+		} else {
+			$log.debug("in callbackChangeIssueStatus");
+			for (var i = 0; i < $scope.issues.length; i++) {
+				if ($scope.issues[i].id == data.id) {
+					$scope.issues[i].state = data.state;
+					$scope.issues[i].assignee = data.assignee
+				}
+			}
+		}
+	}
+
+	$scope.assignIssue = function(issueId) {
+		// if too many results, limit number of results
+		var headerGetUsers = {
+			headers: {
+        	'x-pagination': '0;*',
+        	//'x-sort': 'updatedOn'
+			}	
+		}
+		// start with popup
+		IssueService.getUsers(headerGetUsers, callbackGetUsers);	
+	}
+
+	$scope.rejectIssue = function() {
+		$log.debug("in reject");
+	}
+
+	$scope.setChosenElement = function(returnValue, id) {
+		$scope.issueAction.assigneeId = id;
+		$log.debug("setChosen");
+		postAssignAction();
+	}
+
+
 })
 
-.controller('IssueDetailCtrl', function(IssueService, MapService, $scope, $state, $stateParams, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
+.controller('IssueDetailCtrl', function(IssueService, MapService, $rootScope, $scope, $state, $stateParams, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
 
 	var callbackIssueDeleted = function(error) {
 		if (error != null) {
 			$log.debug("in callbackIssueDeleted error");
 			$log.debug(error);
 		} else {
-			$log.debug("callbackIssueDeleted OK");
+			setTimeout(function() {
+				$rootScope.$broadcast('userDeletedIssue', $scope.issue.id);
+			}, 20);
 			$state.go("sideMenu.issueList");
 		}
 	}
@@ -100,7 +225,10 @@ angular.module('inspctr.issues', [])
 				$scope.issueSaved = false;
 				$scope.clearNewIssue();
 				$scope.$digest();
-			}, 2000);
+				setTimeout(function() {
+					$rootScope.$broadcast('userInsertedIssue');				
+				}, 20);
+			}, 1500);
 		}		
 	}
 
@@ -135,7 +263,10 @@ angular.module('inspctr.issues', [])
 				returnValue: "name",
 				id: "id",
 				setFunction: "setChosenElement",
-				newElementFunction: "createNewElement"
+				newElementFunction: "createNewElement",
+				title: 'Select Issue Type',
+    			subTitle: 'Please stay general',
+    			newElementFunctionPossible: true
 			}
 			$scope.issueTypes = data;
 			IssueService.buildSelectionPopup(what, $scope);
@@ -242,7 +373,6 @@ angular.module('inspctr.issues', [])
 	}
 
 	function deleteIssueFromDB(issue, callback) {
-		$log.debug(issue);
 		return $http.delete(apiUrl + "/issues/" + issue.id)
 		.success(function() {
 			if (typeof callback === "function") {
@@ -412,6 +542,43 @@ angular.module('inspctr.issues', [])
 				}	
 			});
 		},
+		getUsers: function(header, callback) {
+			var callback;
+			var header;
+			return $http.get(apiUrl + "/users", header)
+			.success(function(data) {
+				if (typeof callback === "function") {
+					callback(null, data);
+				}	
+			})
+			.error(function(error) {
+				if (typeof callback === "function") {
+					callback(error, null);
+				}	
+			});
+		},
+		changeIssueStatus: function(issueId, type, comment, assigneeId, callback) {
+			var body = {
+  				type: type,
+  				payload: {
+    				assigneeId: assigneeId,
+    				comment: comment
+  				}
+			};
+			$log.debug(body);
+			return $http.post(apiUrl + "/issues/" + issueId + "/actions", body)
+			.success(function(data) {
+				if (typeof callback === "function") {
+					$log.debug("success");
+					callback(null, data);
+				}
+			})
+			.error(function(error) {
+				if (typeof callback === "function") {
+					callback(error, null);
+				}	
+			});
+		},
 		// buildSelectionPopup is a general function to build popups with a content,
 		// that either calls a setChosenElement(id) or a createNewElement()
 		// The what parameter is an object with three properties = {
@@ -419,15 +586,18 @@ angular.module('inspctr.issues', [])
 		//		label: "thePropertyNameToDisplay",
 		//		returnValue: "thePropertyIdToSetIntoFunction",
 		//		setFunction: "nameOfFunctionToSetElement",
-		//		newElementFunction: "nameOfFunctionForNewElement" 	
+		//		newElementFunction: "nameOfFunctionForNewElement"
+		//		title: "thePopupTitle",
+		//		subTitle: "thePopupSubtitle"
+		//		newElementFunctionPossible: true or false 	
 		// }
 		buildSelectionPopup: function(what, $scope) {
 			var myPopup = $ionicPopup.show({
     			template: '<ion-list><ion-item ng-repeat="element in ' + what.elements +'" ng-click="' + what.setFunction + '(\'{{element.' + what.returnValue + '}}\',\'{{element.' + what.id +'}}\');closePopup()">{{element.' + what.label + '}}</ion-item>'
-    				+ '<ion-item class="inspctr-create-new-element" ng-click="' + what.newElementFunction + '();closePopup()">New</ion-item>'
+    				+ '<ion-item ng-if="' + what.newElementFunctionPossible + '" class="inspctr-create-new-element" ng-click="' + what.newElementFunction + '();closePopup()">New</ion-item>'
     				+ '<ion-item class="inspctr-close-popup" ng-click="closePopup()">Cancel</ion-item></ion-list>',
-    			title: 'Select Issue Type',
-    			subTitle: 'Please stay general',
+    			title: what.title,
+    			subTitle: what.subTitle,
     			scope: $scope,
         	});
         	$scope.closePopup = function() {

@@ -89,6 +89,18 @@ p.inspctr-showstate {
 	color: rgb(143,203,130);
 }
 
+p.inspctr-showstate-alert {
+	font-size: 0.65em;
+	font-weight:bold;
+	color: #ef473a;
+}
+
+p.inspctr-showstate-positive {
+	font-size: 0.65em;
+	font-weight:bold;
+	color: #387ef5;
+}
+
 /* to make sure that the whole list is displayed */
 div.inspctr-bottomblock {
 	width: 100%;
