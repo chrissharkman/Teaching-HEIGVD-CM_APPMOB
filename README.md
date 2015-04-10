@@ -23,9 +23,13 @@ Possible actions are:
 * My Issue List
 List with the issues from the actual user. The color on the side indicates, if an issue has been updated a long time ago or just a minute… green is good, red is pretty bad…
 Also the distance and the time to get to the issue are indicated. The duration represent the time needed to drive by car.
+
 Possible actions are:
+
 – start an issue: so the issue is in progress
+
 – resolve an issue: so the issue is completed and will disappear from the global list
+
 – reject an issue: so the issue will disappear from the global list and will not be considered anymore.
 
 * Issue Map
@@ -34,11 +38,9 @@ No further actions possible.
 
 * New Issue
 Creation of a new issue, also when needed with a new Issue Type. Here a location can be set by dragging the pin to the correct place. Also a picture can be added. The picture is uploaded to the qimg service, an url is saved in the issue. As an option for desktop devices, an url can be set manually.
-An Issue can only be saved if the following elements are present:
-– issue type
-– description
-– location
-– photo
+
+An Issue can only be saved if the following elements are present: **issue type**; **description**; **location**; **photo**.
+
 Also tags can directly be added to the issue, but are not mandatory.
 
 * User Handling
