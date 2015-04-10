@@ -42,4 +42,4 @@ I tried to use a lot of features of the ionic framework - and I think I succeede
 
 ## Presentation Commercial
 
-* [You can see a video presentation of the smooth workflow on youtube.](https://youtu.be/UxbvG-bhZoY)
+* [You can see a video presentation of the smooth workflow on youtube.](https://youtu.be/6s2SCx0db90)
