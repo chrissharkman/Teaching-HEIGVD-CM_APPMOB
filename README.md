@@ -16,32 +16,19 @@ The inspctr app has the following functionalities:
 
 * Issue List
 List with all the actual pendent issues. Indicates the actual state and if a staff member is assigned his name also.
-Possible actions are:
-** assign a staff member
-** reject the issue (so it will not longer appear)
+Possible actions are: **assign** a staff member; **reject** the issue (so it will not longer appear).
 
 * My Issue List
 List with the issues from the actual user. The color on the side indicates, if an issue has been updated a long time ago or just a minute… green is good, red is pretty bad…
 Also the distance and the time to get to the issue are indicated. The duration represent the time needed to drive by car.
-
-Possible actions are:
-
-– start an issue: so the issue is in progress
-
-– resolve an issue: so the issue is completed and will disappear from the global list
-
-– reject an issue: so the issue will disappear from the global list and will not be considered anymore.
+Possible actions are: **start an issue:** so the issue is in progress; **resolve an issue:** so the issue is completed and will disappear from the global list; **reject an issue:** so the issue will disappear from the global list and will not be considered anymore.
 
 * Issue Map
 A map that indicates all the existing issues. A popup displays the description and the image.
 No further actions possible.
 
 * New Issue
-Creation of a new issue, also when needed with a new Issue Type. Here a location can be set by dragging the pin to the correct place. Also a picture can be added. The picture is uploaded to the qimg service, an url is saved in the issue. As an option for desktop devices, an url can be set manually.
-
-An Issue can only be saved if the following elements are present: **issue type**; **description**; **location**; **photo**.
-
-Also tags can directly be added to the issue, but are not mandatory.
+Creation of a new issue, also when needed with a new Issue Type. Here a location can be set by dragging the pin to the correct place. Also a picture can be added. The picture is uploaded to the qimg service, an url is saved in the issue. As an option for desktop devices, an url can be set manually. An Issue can only be saved if the following elements are present: **issue type;** **description;** **location;** **photo.** Also tags can directly be added to the issue, but are not mandatory.
 
 * User Handling
 The Login at the beginning is not an authentification! It is just to recognize which user is actually using the app.
