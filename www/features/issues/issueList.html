@@ -1,7 +1,7 @@
 <ion-view view-title="Issue List">
 	<ion-content ng-controller="IssueListCtrl">
 		<ion-list>
-			<ion-item id="{{issue.id}}" class="item-tumbnail-left" ui-sref="sideMenu.issueDetail({issueId:issue.id})" ng-repeat="issue in issues">
+			<ion-item id="{{issue.id}}" class="item-tumbnail-left" ui-sref="sideMenu.issueDetail({issueId:issue.id})" ng-repeat="issue in issues" ng-if="issue.state != 'rejected'">
 				<div class="inspctr-thumbnailbox" style="background-image:url('{{issue.imageUrl}}');"></div>
 				<h2 class="inspctr-list">{{issue.issueType.name}}</h2>
 				<p class="inspctr-list">{{issue.description}}</p>

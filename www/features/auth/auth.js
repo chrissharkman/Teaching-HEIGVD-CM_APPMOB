@@ -1,6 +1,6 @@
 angular.module('inspctr.auth', ['angular-storage'])
 
-  .factory('AuthService', function(store) {
+  .factory('AuthService', function(store, $log) {
 
     var service = {
       currentUserId: store.get('currentUserId'),
@@ -13,13 +13,17 @@ angular.module('inspctr.auth', ['angular-storage'])
       unsetUser: function() {
         service.currentUserId = null;
         store.remove('currentUserId');
+      },
+
+      getUserId: function() {
+        return store.get('currentUserId');
       }
-    };
+  };  
 
     return service;
   })
 
- .controller('LoginCtrl', function(apiUrl, AuthService, $http, $ionicHistory, $ionicLoading, $scope, $state) {
+ .controller('LoginCtrl', function(apiUrl, AuthService, $http, $ionicHistory, $ionicLoading, $scope, $state, $log) {
 
     // The $ionicView.beforeEnter event happens every time the screen is displayed.
     $scope.$on('$ionicView.beforeEnter', function() {

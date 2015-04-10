@@ -110,6 +110,14 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
   });
 })
 
+.config(function($httpProvider) {
+    $httpProvider.interceptors.push('AuthInterceptor');
+})
+
+.config(function($logProvider){
+  $logProvider.debugEnabled(true);
+})
+
 .run(function(AuthService, $rootScope, $state) {
 
   // Listen for the $stateChangeStart event of AngularUI Router.
@@ -127,10 +135,15 @@ angular.module('inspctr', ['ui.router', 'ionic', 'inspctr.auth', 'inspctr.consta
   });
 })
 
-.config(function($httpProvider) {
-    $httpProvider.interceptors.push('AuthInterceptor');
-})
+.directive('closeOption', function($ionicGesture, $ionicListDelegate) {
+  return {
+    restrict :  'A',
 
-.config(function($logProvider){
-  $logProvider.debugEnabled(true);
+    link : function(scope, elem, attrs) {
+     $ionicGesture.on('touch', function(e){
+       $ionicListDelegate.closeOptionButtons();
+     }, elem);
+
+    }
+  }
 });

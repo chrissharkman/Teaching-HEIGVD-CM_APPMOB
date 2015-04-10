@@ -2,7 +2,7 @@
 
 angular.module('inspctr.issues', [])
 
-.controller('IssueListCtrl', function(IssueService, $scope, $filter, $filter, placeholderImage, placeholderImagePath, $log) {
+.controller('IssueListCtrl', function(IssueService, $scope, $filter, $ionicListDelegate, placeholderImage, placeholderImagePath, $log) {
 	var firstSetLoaded = false;
 	var moreDataAvailable = true;
 
@@ -17,6 +17,7 @@ angular.module('inspctr.issues', [])
 		}
 	}
 
+	// initialisation properties
 	$scope.loadedPages = 0;
 	$scope.itemsPerPage = 12;
 	var header = {
@@ -24,8 +25,10 @@ angular.module('inspctr.issues', [])
         'x-pagination': "" + $scope.loadedPages + ";" + $scope.itemsPerPage + "",
         'x-sort': '-updatedOn'
 		}
-	}		
+	}
+	$scope.issueAction = {users:null,issueId:null};		
 	$scope.issues = IssueService.getIssues(header, callback);
+
 	// listener to erase deleted issues
 	$scope.$on('userDeletedIssue', function(event, issueId) {
 		var notIssueId = "!" + issueId;
@@ -74,8 +77,7 @@ angular.module('inspctr.issues', [])
 
 	//// swipe functionality functions
 
-	var postAssignAction = function() {
-		$log.debug("in assignIssue");
+	var postAssignAction = function(issueId) {
 		var type = "assign";
 		var comment = "";
 		IssueService.changeIssueStatus(issueId, type, comment, $scope.issueAction.assigneeId, callbackChangeIssueStatus);		
@@ -85,8 +87,6 @@ angular.module('inspctr.issues', [])
 		if (error != null) {
 			$log.debug(error);
 		} else {
-			$log.debug("returned data:");
-			$log.debug(data);
 			var what = {
 				elements: "issueAction.users",
 				label: "firstname + \" \" + element.lastname",
@@ -98,7 +98,6 @@ angular.module('inspctr.issues', [])
 				subTitle: "to the issue",
 				newElementFunctionPossible: false 	
 			}
-			$scope.issueAction = {users:null};
 			$scope.issueAction.users = data;
 			IssueService.buildSelectionPopup(what, $scope);
 		}
@@ -108,14 +107,14 @@ angular.module('inspctr.issues', [])
 		if (error != null) {
 			$log.debug(error)
 		} else {
-			$log.debug("in callbackChangeIssueStatus");
 			for (var i = 0; i < $scope.issues.length; i++) {
 				if ($scope.issues[i].id == data.id) {
 					$scope.issues[i].state = data.state;
-					$scope.issues[i].assignee = data.assignee
+					$scope.issues[i].assignee = data.assignee;
 				}
 			}
 		}
+		$ionicListDelegate.closeOptionButtons();
 	}
 
 	$scope.assignIssue = function(issueId) {
@@ -126,18 +125,20 @@ angular.module('inspctr.issues', [])
         	//'x-sort': 'updatedOn'
 			}	
 		}
+		$scope.issueAction.issueId = issueId;
 		// start with popup
 		IssueService.getUsers(headerGetUsers, callbackGetUsers);	
 	}
 
-	$scope.rejectIssue = function() {
-		$log.debug("in reject");
+	$scope.rejectIssue = function(issueId) {
+		var type = "reject";
+		var comment = "";
+		IssueService.changeIssueStatus(issueId, type, comment, null, callbackChangeIssueStatus);	
 	}
 
 	$scope.setChosenElement = function(returnValue, id) {
 		$scope.issueAction.assigneeId = id;
-		$log.debug("setChosen");
-		postAssignAction();
+		postAssignAction($scope.issueAction.issueId);
 	}
 
 
@@ -364,6 +365,44 @@ angular.module('inspctr.issues', [])
 
 })
 
+.controller('MyIssueListCtrl', function(IssueService, AuthService, $scope, $rootScope, $filter, $ionicListDelegate, placeholderImage, placeholderImagePath, $log) {
+	var firstSetLoaded = false;
+	var moreDataAvailable = true;
+
+	var callback = function(error, data) {
+		if (error != null) {
+			$log.debug(error)
+		} else {
+			$scope.loadedPages++;
+			$scope.issues = data;
+			$scope.issues = IssueService.checkPlaceholder($scope.issues);
+			firstSetLoaded = true;
+		}
+	}
+
+	// initialisation properties
+	$scope.loadedPages = 0;
+	$scope.itemsPerPage = 12;
+	var header = {
+		headers: {
+        'x-pagination': "" + $scope.loadedPages + ";" + $scope.itemsPerPage + "",
+        'x-sort': '-updatedOn'
+		}
+	}
+	$scope.issueAction = {users:null,issueId:null};		
+	$log.debug($scope);
+	$log.debug($rootScope);
+	var currentUserId = AuthService.getUserId();
+	$log.debug(currentUserId);
+	//$scope.issues = IssueService.getMyIssues($scope, callback);
+
+
+
+})
+
+
+
+/********************************* SERVICE FROM HERE **********************************/
 
 .factory('IssueService', function($http, apiUrl, placeholderImage, placeholderImagePath, $ionicPopup, $document, $log) {
 	// function to determine, if config says that placeholder should be set (true).
@@ -432,6 +471,22 @@ angular.module('inspctr.issues', [])
 				}	
 			})
 			;
+		},
+		getMyIssues: function(userId, callback) {
+			var body = {
+				"_assignee":userId
+			}
+			return $http.post(apiUrl + "/issues/search", body)
+			.success(function(data) {
+				if (typeof callback === "function") {
+					callback(null, data);
+				}	
+			})
+			.error(function(error) {
+				if (typeof callback === "function") {
+					callback(error, null);
+				}	
+			});
 		},
 		getIssueDetails: function(stateParams, callback) {
 			var callback;
@@ -565,11 +620,9 @@ angular.module('inspctr.issues', [])
     				comment: comment
   				}
 			};
-			$log.debug(body);
 			return $http.post(apiUrl + "/issues/" + issueId + "/actions", body)
 			.success(function(data) {
 				if (typeof callback === "function") {
-					$log.debug("success");
 					callback(null, data);
 				}
 			})
