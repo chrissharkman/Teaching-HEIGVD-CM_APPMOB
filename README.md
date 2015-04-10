@@ -49,6 +49,8 @@ Small changes in the web service implementation had to be done: now no checks fo
 To work faster when testing on local development environnment, a thumbnail and image replacement function is integrated. This can be controlled by the config file.
 I tried to use a lot of features of the ionic framework - and I think I succeeded. One of my biggest issues was at the end the callback handling. For the next project, a better strategy (with cascading or similar) will be used to handle this in a smarter way.
 
+> The app was tested on MacOSX with Chrome and on iPhone iOS7.
+
 ## Presentation Commercial
 
 * [You can see a video presentation of the smooth workflow on youtube.](https://youtu.be/UxbvG-bhZoY)
