@@ -67,6 +67,7 @@ function saveConfig(environment) {
     .pipe(replace(/@qimgUrl@/, config.qimgUrl))
     .pipe(replace(/@qimgToken@/, config.qimgToken))
     .pipe(replace(/@cameraFunctionalityAvailable@/, config.cameraFunctionalityAvailable))
+    .pipe(replace(/@googleGeocodeAPI@/, config.googleGeocodeAPI))
 
     // Save the result in www/js.
     .pipe(gulp.dest('www/js'));

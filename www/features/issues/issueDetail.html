@@ -3,6 +3,7 @@
 		<button class="button button-full button-light" ng-click="backView()">Back to List</button>
 		<div class="padding">
 			<p class="inspctr-issue-date">Created on: {{issue.createdOn | date:'dd.MM.yyyy HH:mm'}} – Last update: {{issue.updatedOn | date:'dd.MM.yyyy HH:mm'}}</p>
+			<div class="inspctr-issue-state" ng-class="{created: issue.state == 'created', assigned: issue.state == 'assigned', progress: issue.state == 'in_progress', resolved: issue.state == 'resolved', rejected: issue.state == 'rejected'}"></div>
 			<h1>{{issue.issueType.name}}</h1>
 			<p>{{issue.description}}</p>
 		</div>	
@@ -11,8 +12,8 @@
 		</div>
 		<!-- map -->
 		<leaflet id="map-detail" class="inspctr-detail-map-height" defaults="mapDefaults" center="mapCenter" bounds="mapBounds" markers="mapMarkers" data-tap-disabled="false"></leaflet>
+		<p class="inspctr-address">Address: {{issue.formattedAddress}}</p>
 		<div class="padding">
-			<p class="inspctr-state">{{issue.state}}</p>
 			<div data-id="{{issue.assignee.id}}" class="inspctr-group-box">
 				<h2>Assignee</h2>
 				<p ng-if="issue.assignee.name">{{issue.assignee.name}}</p>

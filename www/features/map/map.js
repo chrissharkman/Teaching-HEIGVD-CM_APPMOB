@@ -166,6 +166,19 @@ angular.module('inspctr.map', [])
         		$log.debug("Geolocation is not supported or permitted.");
     		}
 		},
+		getAddress: function(issue, callback) {
+			var geocoder = new google.maps.Geocoder();
+			var latlng = new google.maps.LatLng(issue.lat, issue.lng);
+			var formattedAddress;
+			geocoder.geocode({'latLng': latlng}, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK && typeof callback === "function") {
+					callback(null, results[0].formatted_address);
+				} else {
+					callback("error");
+				}
+			});
+
+		},
 		setMapCenter: function($scope) {
 			if ($scope.geoposition != null && $scope.mapCenter != null) {
 				$scope.mapCenter.lat = $scope.geoposition.coords.latitude;

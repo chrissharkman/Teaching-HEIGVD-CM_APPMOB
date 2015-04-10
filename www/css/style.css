@@ -14,8 +14,36 @@
 }
 
 /********* global inspctr stlyling elements ***********/
-.inspctr-state {
 
+.inspctr-issue-state {
+	display:inline-block;
+	float:right;
+	width: 50px;
+	height: 50px;
+	background-size: contain;
+	background-position: center center;
+	background-repeat: no-repeat;
+
+}
+.created {
+	background-image: url('../img/created-icon.png');
+}
+.assigned {
+	background-image: url('../img/assigned-icon.png');
+}
+.progress {
+	background-image: url('../img/progress-icon.png');
+}
+.resolved {
+	background-image: url('../img/resolved-icon.png');
+}
+.rejected {
+	background-image: url('../img/rejected-icon.png');	
+}
+
+p.inspctr-address {
+	padding: 15px;
+	background-color: rgb(240,240,240);
 }
 
 .inspctr-group-box {
@@ -114,8 +142,24 @@ div.inspctr-bottomblock {
 	margin-bottom:100px;
 }
 
-.inspctr-my-issue-list {
+.inspctrIssueOk {
 	border-left: 10px solid #90e480;
+}
+.inspctrIssueWarning {
+	border-left: 10px solid #ffc900;
+}
+.inspctrIssueUrgent {
+	border-left: 10px solid #ef473a;
+}
+.inspctrIssueUnknown {
+	border-left: 10px solid rgb(240,240,240);
+}
+
+p.inspctr-distance-matrix {
+	display: inline-block;
+	font-size: 0.65em;
+	background-color: rgb(240,240,240);
+	padding: 2px 8px;
 }
 
 /******** Issue Detail view *************/

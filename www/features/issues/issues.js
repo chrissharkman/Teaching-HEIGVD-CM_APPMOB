@@ -146,7 +146,7 @@ angular.module('inspctr.issues', [])
 
 })
 
-.controller('IssueDetailCtrl', function(IssueService, MapService, $rootScope, $scope, $state, $stateParams, $ionicHistory, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
+.controller('IssueDetailCtrl', function(IssueService, MapService, $rootScope, $scope, $state, $stateParams, $ionicHistory, $http, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, googleGeocodeAPI, $window, $log) {
 
 	var callbackIssueDeleted = function(error) {
 		if (error != null) {
@@ -167,6 +167,14 @@ angular.module('inspctr.issues', [])
 	}
 
 	var callbackDetails = function(error, data) {
+		var callbackSetAddress = function(error, formattedAddress) {
+			if (error != null) {
+				$log.debug("Error occurred when setting address");
+			} else {
+				$scope.issue.formattedAddress = formattedAddress;
+				$scope.$digest();
+			}	
+		}
 		if (error != null) {
 			$log.debug(error);
 		} else {
@@ -175,6 +183,7 @@ angular.module('inspctr.issues', [])
 			MapService.setMapCenterOnIssue($scope.issue, $scope);
 			MapService.setMapZoom(16, $scope, callbackZoom);
 			MapService.setSingleIssueMarker($scope.issue, $scope);
+			MapService.getAddress($scope.issue, callbackSetAddress);
 		}
 	};
 
@@ -372,24 +381,39 @@ angular.module('inspctr.issues', [])
 
 .controller('MyIssueListCtrl', function(IssueService, AuthService, MapService, $scope, $rootScope, $filter, $ionicListDelegate, placeholderImage, placeholderImagePath, geolocation, $log) {
 
-	var setIssueDistances = function() {
-		$log.debug("in setIssueDistances");
-		$log.debug($scope.geoposition);
-		var origin = new google.maps.LatLng($scope.geoposition.coords.latitude, $scope.geoposition.coords.longitude);
+	var setIssuesDistances = function() {
 		$scope.issues.forEach(function(issue) {
-			var destination = new google.maps.LatLng(issue.lat, issue.lng);
-			$log.debug(destination);
-			var service = new google.maps.DistanceMatrixService();
-			service.getDistanceMatrix({
-				origins: [origin],
-				destinations: [destination],
-				travelMode: google.maps.TravelMode.DRIVING,
-				avoidHighways: false,
-				avoidTolls: false
-			}, callbackDistanceMatrix);
+			setIssueDistance(issue);
 		});
+		try {
+			$scope.$digest();
+		} catch (exception) {
+			// nothing preseen to do
+		}	
 	}
 	
+	var setIssueDistance = function(issue) {
+		var callbackDistanceMatrix = function(response, status) {
+			issue.distanceMatrix = response.rows[0].elements[0];
+		}
+		var daysSinceLastUpdate = function() {
+			var update = new Date(issue.updatedOn);
+			update = update.getTime();
+			now = new Date().getTime();
+			issue.hoursSinceUpdate = (now - update) / 1000 / 60 / 60;
+		}
+		var origin = new google.maps.LatLng($scope.geoposition.coords.latitude, $scope.geoposition.coords.longitude);
+		var destination = new google.maps.LatLng(issue.lat, issue.lng);
+		var service = new google.maps.DistanceMatrixService();
+		service.getDistanceMatrix({
+			origins: [origin],
+			destinations: [destination],
+			travelMode: google.maps.TravelMode.DRIVING,
+			avoidHighways: false,
+			avoidTolls: false
+		}, callbackDistanceMatrix);
+		daysSinceLastUpdate();
+	}
 
 	var callbackChangeIssueStatus = function(error, data) {
 		if (error != null) {
@@ -404,22 +428,11 @@ angular.module('inspctr.issues', [])
 		$ionicListDelegate.closeOptionButtons();
 	}
 
-	var callbackDistanceMatrix = function(response, status) {
-  		// See Parsing the Results for
-		// the basics of a callback function.
-		$log.debug("in callbackMatrix");
-		$log.debug(response);
-		$log.debug(status);
-		$log.debug(response.rows[0].elements[0].distance.text);
-		$log.debug(response.rows[0].elements[0].duration.text);
-	}
-
 	var callbackGeolocation = function(error, data) {
 		if (error != null) {
 			$log.debug(error);
 		} else {
-			$log.debug("in callbackGeolocation of issue");
-			$log.debug($scope);
+			// actually no need for
 		}	
 	}
 
@@ -431,7 +444,7 @@ angular.module('inspctr.issues', [])
 			$scope.issues = data;
 			$scope.issues = IssueService.checkPlaceholder($scope.issues);
 			firstSetLoaded = true;
-			setIssueDistances();
+			setIssuesDistances();
 		}
 	}
 
