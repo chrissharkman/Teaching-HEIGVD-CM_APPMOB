@@ -7,6 +7,11 @@
 	position: relative;
 }
 
+.button.button-cleared {
+	background-color:rgb(143,203,130);
+	border-color:rgb(143,203,130);
+	color:white;
+}
 
 /********* global inspctr stlyling elements ***********/
 .inspctr-state {
@@ -71,6 +76,7 @@ p.inspctr-list {
 div.inspctr-thumbnailbox {
 	position: relative;
 	width: 20%;
+	min-width: 65px;
 	max-width: 90px;
 	margin-right: 15px;
 	float:left;
@@ -106,6 +112,10 @@ div.inspctr-bottomblock {
 	width: 100%;
 	height: 60px;
 	margin-bottom:100px;
+}
+
+.inspctr-my-issue-list {
+	border-left: 10px solid #90e480;
 }
 
 /******** Issue Detail view *************/

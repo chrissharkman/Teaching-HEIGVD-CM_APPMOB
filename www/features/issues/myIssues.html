@@ -1,5 +1,20 @@
 <ion-view view-title="My Issues">
   <ion-content ng-controller="MyIssueListCtrl">
-    <p>Hello! This is the issue MY issuesLIST creation screen.</p>
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+		<ion-button ng-click="testDist()">Button</ion-button>
+  		<ion-list>
+			<ion-item id="{{issue.id}}" class="item-tumbnail-left inspctr-my-issue-list" ui-sref="sideMenu.issueDetail({issueId:issue.id})" ng-repeat="issue in issues">
+				<div class="inspctr-thumbnailbox" style="background-image:url('{{issue.imageUrl}}');"></div>
+				<h2 class="inspctr-list">{{issue.issueType.name}}</h2>
+				<p class="inspctr-list">{{issue.description}}</p>
+				<p ng-if="issue.state == 'in_progress'" class="inspctr-showstate">in progress</p>
+				<p ng-if="issue.state == 'rejected'" class="inspctr-showstate-alert">rejected</p>
+				<p ng-if="issue.state == 'resolved'" class="inspctr-showstate-positive">resolved</p>
+				<ion-option-button class="button-balanced" ng-click="startIssue('{{issue.id}}')">Start</ion-option-button>
+				<ion-option-button class="button-positive" ng-click="resolveIssue('{{issue.id}}')">Resolved</ion-option-button>
+				<ion-option-button class="button-assertive" ng-click="rejectIssue('{{issue.id}}')">Reject</ion-option-button>	
+			</ion-item>
+		</ion-list>
+		<ion-infinite-scroll ng-if="moreDataCanBeLoaded()" on-infinite="loadMoreData()" distance="10%"></ion-infinite-scroll>
   </ion-content>
 </ion-view>

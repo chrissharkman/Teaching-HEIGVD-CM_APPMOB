@@ -2,7 +2,7 @@
 
 angular.module('inspctr.issues', [])
 
-.controller('IssueListCtrl', function(IssueService, $scope, $filter, $ionicListDelegate, placeholderImage, placeholderImagePath, $log) {
+.controller('IssueListCtrl', function(IssueService, $scope, $rootScope, $filter, $ionicListDelegate, placeholderImage, placeholderImagePath, $log) {
 	var firstSetLoaded = false;
 	var moreDataAvailable = true;
 
@@ -55,6 +55,7 @@ angular.module('inspctr.issues', [])
 					});
 				}	
 				$scope.loadedPages++;
+				$log.debug($scope);
 			 	$scope.$broadcast('scroll.infiniteScrollComplete');
 			}
 		}
@@ -80,7 +81,8 @@ angular.module('inspctr.issues', [])
 	var postAssignAction = function(issueId) {
 		var type = "assign";
 		var comment = "";
-		IssueService.changeIssueStatus(issueId, type, comment, $scope.issueAction.assigneeId, callbackChangeIssueStatus);		
+		IssueService.changeIssueStatus(issueId, type, comment, $scope.issueAction.assigneeId, callbackChangeIssueStatus);
+		$rootScope.$broadcast('newAssignment');		
 	}
 
 	var callbackGetUsers = function(error, data) {
@@ -144,7 +146,7 @@ angular.module('inspctr.issues', [])
 
 })
 
-.controller('IssueDetailCtrl', function(IssueService, MapService, $rootScope, $scope, $state, $stateParams, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
+.controller('IssueDetailCtrl', function(IssueService, MapService, $rootScope, $scope, $state, $stateParams, $ionicHistory, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
 
 	var callbackIssueDeleted = function(error) {
 		if (error != null) {
@@ -186,6 +188,9 @@ angular.module('inspctr.issues', [])
 	$scope.deleteIssue = function() {
 		IssueService.deleteIssueDialog($scope.issue, callbackIssueDeleted);
 	};
+	$scope.backView = function() {
+		$ionicHistory.goBack();
+	}
 })
 
 .controller('NewIssueCtrl', function(IssueService, CameraService, MapService, $scope, $rootScope, $ionicPopup, $state, $stateParams, $http, mapboxMapId, mapboxAccessToken, cameraFunctionalityAvailable, geolocation, qimgUrl, qimgToken, $window, $log) {
@@ -365,38 +370,114 @@ angular.module('inspctr.issues', [])
 
 })
 
-.controller('MyIssueListCtrl', function(IssueService, AuthService, $scope, $rootScope, $filter, $ionicListDelegate, placeholderImage, placeholderImagePath, $log) {
-	var firstSetLoaded = false;
-	var moreDataAvailable = true;
+.controller('MyIssueListCtrl', function(IssueService, AuthService, MapService, $scope, $rootScope, $filter, $ionicListDelegate, placeholderImage, placeholderImagePath, geolocation, $log) {
+
+	var setIssueDistances = function() {
+		$log.debug("in setIssueDistances");
+		$log.debug($scope.geoposition);
+		var origin = new google.maps.LatLng($scope.geoposition.coords.latitude, $scope.geoposition.coords.longitude);
+		$scope.issues.forEach(function(issue) {
+			var destination = new google.maps.LatLng(issue.lat, issue.lng);
+			$log.debug(destination);
+			var service = new google.maps.DistanceMatrixService();
+			service.getDistanceMatrix({
+				origins: [origin],
+				destinations: [destination],
+				travelMode: google.maps.TravelMode.DRIVING,
+				avoidHighways: false,
+				avoidTolls: false
+			}, callbackDistanceMatrix);
+		});
+	}
+	
+
+	var callbackChangeIssueStatus = function(error, data) {
+		if (error != null) {
+			$log.debug(error)
+		} else {
+			for (var i = 0; i < $scope.issues.length; i++) {
+				if ($scope.issues[i].id == data.id) {
+					$scope.issues[i].state = data.state;
+				}
+			}
+		}
+		$ionicListDelegate.closeOptionButtons();
+	}
+
+	var callbackDistanceMatrix = function(response, status) {
+  		// See Parsing the Results for
+		// the basics of a callback function.
+		$log.debug("in callbackMatrix");
+		$log.debug(response);
+		$log.debug(status);
+		$log.debug(response.rows[0].elements[0].distance.text);
+		$log.debug(response.rows[0].elements[0].duration.text);
+	}
+
+	var callbackGeolocation = function(error, data) {
+		if (error != null) {
+			$log.debug(error);
+		} else {
+			$log.debug("in callbackGeolocation of issue");
+			$log.debug($scope);
+		}	
+	}
 
 	var callback = function(error, data) {
 		if (error != null) {
-			$log.debug(error)
+			$log.debug(error);
 		} else {
 			$scope.loadedPages++;
 			$scope.issues = data;
 			$scope.issues = IssueService.checkPlaceholder($scope.issues);
 			firstSetLoaded = true;
+			setIssueDistances();
 		}
 	}
 
-	// initialisation properties
+	// listener to remove all items from list and reload freshly also newly created items
+	$rootScope.$on('newAssignment', function(event) {
+		$scope.doRefresh();
+	});
+
+	// action
+	var firstSetLoaded = false;
+	var moreDataAvailable = true;
 	$scope.loadedPages = 0;
 	$scope.itemsPerPage = 12;
 	var header = {
 		headers: {
-        'x-pagination': "" + $scope.loadedPages + ";" + $scope.itemsPerPage + "",
-        'x-sort': '-updatedOn'
+			'x-pagination': "" + $scope.loadedPages + ";" + $scope.itemsPerPage + "",
+			'x-sort': '-updatedOn'
 		}
 	}
 	$scope.issueAction = {users:null,issueId:null};		
-	$log.debug($scope);
-	$log.debug($rootScope);
+
+	// start action
 	var currentUserId = AuthService.getUserId();
-	$log.debug(currentUserId);
-	//$scope.issues = IssueService.getMyIssues($scope, callback);
+	MapService.getDeviceLocation(geolocation, $scope, callbackGeolocation);
+	$scope.issues = IssueService.getMyIssues(AuthService.getUserId(), header, callback);
 
-
+	// scope functionalities
+	$scope.startIssue = function(issueId) {
+		var type = "start";
+		var comment = "";
+		IssueService.changeIssueStatus(issueId, type, comment, null, callbackChangeIssueStatus);
+	}
+	$scope.resolveIssue = function(issueId) {
+		var type = "resolve";
+		var comment = "";
+		IssueService.changeIssueStatus(issueId, type, comment, null, callbackChangeIssueStatus);
+	}
+	$scope.rejectIssue = function(issueId) {
+		var type = "reject";
+		var comment = "";
+		IssueService.changeIssueStatus(issueId, type, comment, null, callbackChangeIssueStatus);	
+	}
+	$scope.doRefresh = function() {
+		$scope.issues = IssueService.getMyIssues(AuthService.getUserId(), header, callback);
+		$scope.$broadcast('scroll.refreshComplete');
+	}
 
 })
 
@@ -472,11 +553,11 @@ angular.module('inspctr.issues', [])
 			})
 			;
 		},
-		getMyIssues: function(userId, callback) {
+		getMyIssues: function(userId, header, callback) {
 			var body = {
 				"_assignee":userId
 			}
-			return $http.post(apiUrl + "/issues/search", body)
+			return $http.post(apiUrl + "/issues/search", body, header)
 			.success(function(data) {
 				if (typeof callback === "function") {
 					callback(null, data);
