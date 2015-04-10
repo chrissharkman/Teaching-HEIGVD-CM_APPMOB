@@ -104,7 +104,6 @@ p.inspctr-list {
 div.inspctr-thumbnailbox {
 	position: relative;
 	width: 20%;
-	min-width: 65px;
 	max-width: 90px;
 	margin-right: 15px;
 	float:left;

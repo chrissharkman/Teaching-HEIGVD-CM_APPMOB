@@ -1,56 +1,54 @@
-# COMEM APPMOB
+# INSPCTR
+## the app for city management
 
-> Course on mobile application development.
+> Project from course on mobile application development at heig-vd with Simon Oulevay and Olivier Liechti.
+> made by Christian Heimann
 
-## Slides
+## In General
 
-See the [slides directory](slides).
+The app is designed for staff members of a community or a city. It is concieved to create a smooth workflow to organize the issues, to handle them correctly. The app uses geolocalisation, mapbox maps, the photo functionality of devices and the google.maps.api.
+The main focus was set on the userfriendlyness for the workers on the street. For them it should be simple and useful.
+As base the framework ionic delivers a lot of nice features, to make an app looking good immediately! If you never tried it, you should.
 
-## Links
+## Functionality
 
-* [Repo to develop the Citizen Engagement mobile application](https://github.com/SoftEng-HEIGVD/Teaching-HEIGVD-CM_APPMOB-2015-CitizenEngagement)
-* [Repo with the completed skeleton application for the Citizen Engagement mobile application](https://github.com/SoftEng-HEIGVD/Teaching-HEIGVD-CM_APPMOB-2015-SkeletonApp)
+The inspctr app has the following functionalities:
 
-If you want to use the reference implementation of the Citizen Engagement API rather than your own:
+* Issue List
+List with all the actual pendent issues. Indicates the actual state and if a staff member is assigned his name also.
+Possible actions are:
+** assign a staff member
+** reject the issue (so it will not longer appear)
 
-* [Documentation for the reference implementation of the Citizen Engagement API](https://polar-brook-7624.herokuapp.com)
-* [Repo of the Express reference implementation](https://github.com/SoftEng-HEIGVD/Teaching-HEIGVD-CM_WEBS-2015-Labo-Express-Impl)
-* [Repo of the API documentation for the reference implementation](https://github.com/SoftEng-HEIGVD/Teaching-HEIGVD-CM_WEBS-2015-Labo-Doc-Impl)
+* My Issue List
+List with the issues from the actual user. The color on the side indicates, if an issue has been updated a long time ago or just a minute… green is good, red is pretty bad…
+Also the distance and the time to get to the issue are indicated. The duration represent the time needed to drive by car.
+Possible actions are:
+** start an issue: so the issue is in progress
+** resolve an issue: so the issue is completed and will disappear from the global list
+** reject an issue: so the issue will disappear from the global list and will not be considered anymore.
 
-## Resources
+* Issue Map
+A map that indicates all the existing issues. A popup displays the description and the image.
+No further actions possible.
 
-* [Ionic Installation](http://ionicframework.com/getting-started/)
-* [Ionic Documentation](http://ionicframework.com/docs/)
+* New Issue
+Creation of a new issue, also when needed with a new Issue Type. Here a location can be set by dragging the pin to the correct place. Also a picture can be added. The picture is uploaded to the qimg service, an url is saved in the issue. As an option for desktop devices, an url can be set manually.
+An Issue can only be saved if the following elements are present:
+** issue type
+** description
+** location
+** photo
+Also tags can directly be added to the issue, but are not mandatory.
 
-* [AngularJS](https://angularjs.org)
-* [AngularJS Developer Guide](https://docs.angularjs.org/guide)
-* [AngularJS API Reference](https://docs.angularjs.org/api)
+* User Handling
+The Login at the beginning is not an authentification! It is just to recognize which user is actually using the app.
 
-* [Angular UI Router](https://github.com/angular-ui/ui-router)
-* [Angular UI Router Guide](https://github.com/angular-ui/ui-router/wiki)
-* [Angular UI Router API Reference](http://angular-ui.github.io/ui-router/site/#/api/ui.router)
+## Additional Notes
+Small changes in the web service implementation had to be done: now no checks for assignee made are made for rejection. A general manager can reject an issue from beginning – without need of attribution. This makes it less bureaucratic.
+To work faster when testing on local development environnment, a thumbnail and image replacement function is integrated. This can be controlled by the config file.
+I tried to use a lot of features of the ionic framework - and I think I succeeded. One of my biggest issues was at the end the callback handling. For the next project, a better strategy (with cascading or similar) will be used to handle this in a smarter way.
 
-* [Mapbox](https://www.mapbox.com)
-* [Angular Leaflet Directive for Mapbox](https://github.com/tombatossals/angular-leaflet-directive)
-* [Mapbox Javascript Library](https://www.mapbox.com/mapbox.js/api/v2.1.5/)
+## Presentation Commercial
 
-* [Cordova Camera Plugin](https://github.com/apache/cordova-plugin-camera/blob/master/doc/index.md)
-
-* [qimg](https://github.com/SoftEng-HEIGVD/qimg)
-* [qimg API Reference](http://softeng-heigvd.github.io/qimg/)
-
-## Labo Delivery
-
-**Delivery date:** April 10th at noon.
-
-Details to follow.
-
-## Known Issues
-
-* [Ionic View App Issue #10: Upload doesn't seem to be updating JS or CSS files](https://github.com/driftyco/ionic-view-issues/issues/10)
-
-  If you are using the Ionic View App to develop your mobile application on iOS,
-  be aware that sometimes uploading is not enough to refresh your code on the device.
-  You might need to stop your app (swipe down with three fingers), clear app data,
-  and restart the Ionic View App (double tap on home button and close Ionic View App).
-  Then you can re-download your app and it should be the latest version.
+* [You can see a video presentation of the smooth workflow on youtube.](https://youtu.be/UxbvG-bhZoY)

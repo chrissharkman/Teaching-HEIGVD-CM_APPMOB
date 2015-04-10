@@ -146,7 +146,7 @@ angular.module('inspctr.issues', [])
 
 })
 
-.controller('IssueDetailCtrl', function(IssueService, MapService, $rootScope, $scope, $state, $stateParams, $ionicHistory, $http, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, googleGeocodeAPI, $window, $log) {
+.controller('IssueDetailCtrl', function(IssueService, MapService, $rootScope, $scope, $state, $stateParams, $ionicHistory, $http, placeholderImage, placeholderImagePath, mapboxMapId, mapboxAccessToken, $window, $log) {
 
 	var callbackIssueDeleted = function(error) {
 		if (error != null) {
@@ -388,7 +388,8 @@ angular.module('inspctr.issues', [])
 		try {
 			$scope.$digest();
 		} catch (exception) {
-			// nothing preseen to do
+			setTimeout(function() {
+				$scope.$digest()}, 2000);
 		}	
 	}
 	
